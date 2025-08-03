@@ -1,0 +1,189 @@
+'use client'; 
+
+import { useState, useRef, useEffect } from 'react';
+
+// Tipe data disederhanakan: fokus ke Teks Latin
+type Verse = {
+  verse_key: string;
+  text_uthmani: string;
+  translation: string;
+  audioUrl: string | null;
+  chapterName: string;
+  transliteration: string; 
+};
+
+export default function HomePage() {
+  const [verse, setVerse] = useState<Verse | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isAudioLoading, setIsAudioLoading] = useState(false);
+  const [currentVerseNumber, setCurrentVerseNumber] = useState<number | null>(null);
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const fetchSpecificVerse = async (verseNumber: number) => {
+    if (verseNumber < 1 || verseNumber > 6236) return;
+    
+    setIsNavigating(true);
+    if(audioRef.current) audioRef.current.pause();
+    setIsPlaying(false);
+    setIsAudioLoading(false);
+
+    try {
+      // URL BARU: Kembali ke alquran.cloud, meminta 4 edisi (termasuk transliterasi)
+      const response = await fetch(`http://api.alquran.cloud/v1/ayah/${verseNumber}/editions/quran-uthmani,id.indonesian,ar.alafasy,en.literation`);
+      const data = await response.json();
+      
+      console.log("Data mentah diterima:", data); // Untuk debugging
+  
+      if (data.code === 200) {
+        const arabicData = data.data[0];
+        const translationData = data.data[1];
+        const audioData = data.data[2];
+        const transliterationData = data.data[3];
+
+        setVerse({
+          verse_key: `${arabicData.surah.number}:${arabicData.numberInSurah}`,
+          text_uthmani: arabicData.text,
+          translation: translationData.text,
+          audioUrl: audioData.audio,
+          chapterName: arabicData.surah.englishName,
+          transliteration: transliterationData.text,
+        });
+        setCurrentVerseNumber(verseNumber);
+      } else {
+        throw new Error(data.status);
+      }
+    } catch (error) {
+      console.error("TERJADI ERROR:", error);
+      alert("Gagal mengambil data. Silakan cek konsol browser.");
+    }
+    setIsNavigating(false);
+  };
+
+  const fetchRandomVerse = async () => {
+    setIsLoading(true);
+    const randomVerseNumber = Math.floor(Math.random() * 6236) + 1;
+    await fetchSpecificVerse(randomVerseNumber);
+    setIsLoading(false);
+  };
+
+  const handlePrevious = () => {
+    if (currentVerseNumber) {
+      fetchSpecificVerse(currentVerseNumber - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentVerseNumber) {
+      fetchSpecificVerse(currentVerseNumber + 1);
+    }
+  };
+
+  const handlePlayPause = () => {
+    if (isPlaying) {
+      audioRef.current?.pause();
+    } else {
+      setIsAudioLoading(true);
+      audioRef.current?.play();
+    }
+  };
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      const handlePlay = () => { setIsPlaying(true); setIsAudioLoading(false); };
+      const handlePause = () => setIsPlaying(false);
+      const handleWaiting = () => setIsAudioLoading(true);
+
+      audio.addEventListener('playing', handlePlay);
+      audio.addEventListener('pause', handlePause);
+      audio.addEventListener('ended', handlePause);
+      audio.addEventListener('waiting', handleWaiting);
+
+      return () => {
+        audio.removeEventListener('playing', handlePlay);
+        audio.removeEventListener('pause', handlePause);
+        audio.removeEventListener('ended', handlePause);
+        audio.removeEventListener('waiting', handleWaiting);
+      };
+    }
+  }, [verse]);
+
+
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center p-8 text-center bg-gray-50">
+      
+      {verse && (
+        <div className="mb-8 max-w-2xl w-full">
+          <div className="flex justify-between mb-4">
+            <button onClick={handlePrevious} disabled={isNavigating || currentVerseNumber === 1} className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50">‹ Ayat Sebelumnya</button>
+            <button onClick={handleNext} disabled={isNavigating || currentVerseNumber === 6236} className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50">Ayat Berikutnya ›</button>
+          </div>
+
+          <div className="rounded-lg bg-white p-8 shadow-xl text-left">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-gray-800 mb-1">{verse.chapterName}</h2>
+              <p className="mb-4 text-lg font-semibold text-gray-700">{verse.verse_key}</p>
+            </div>
+            
+            {verse.audioUrl && <audio ref={audioRef} src={verse.audioUrl} preload="auto" />}
+
+            <p 
+              className="text-4xl leading-relaxed text-right dir-rtl mb-4" 
+              style={{ fontFamily: 'var(--font-quran)' }}
+            >
+              {verse.text_uthmani}
+            </p>
+            
+            <p className="text-gray-500 italic mb-6">
+              {verse.transliteration}
+            </p>
+            
+            <p className="text-gray-800">{verse.translation}</p>
+
+            <div className="mt-4 pt-4 border-t text-center">
+              {verse.audioUrl ? (
+                <button 
+                  onClick={handlePlayPause}
+                  disabled={isAudioLoading}
+                  className="rounded-full bg-green-500 px-6 py-2 font-semibold text-white transition-all duration-200 hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-wait"
+                >
+                  {isAudioLoading ? 'Memuat Audio...' : isPlaying ? '⏹️ Hentikan' : '▶️ Dengarkan'}
+                </button>
+              ) : (
+                <button 
+                  disabled 
+                  className="rounded-full bg-gray-300 px-6 py-2 font-semibold text-gray-500 cursor-not-allowed"
+                >
+                  Audio tidak tersedia
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {!verse && (
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-800">
+            Ayat Pilihan
+          </h1>
+          <p className="mt-2 text-lg text-gray-600">
+            Temukan petunjuk dan ketenangan dalam Al-Qur'an.
+          </p>
+        </div>
+      )}
+
+      <button 
+        onClick={fetchRandomVerse}
+        disabled={isLoading}
+        className="rounded-lg bg-blue-600 px-8 py-4 text-xl font-semibold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:scale-100"
+      >
+        {isLoading ? 'Mencari...' : 'CARI AYAT ACAK'}
+      </button>
+
+    </main>
+  );
+}
