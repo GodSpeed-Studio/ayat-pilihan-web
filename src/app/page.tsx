@@ -2,14 +2,13 @@
 
 import { useState, useRef, useEffect } from 'react';
 
+// Tipe data disederhanakan ke fitur yang stabil
 type Verse = {
   verse_key: string;
   text_uthmani: string;
   translation: string;
   audioUrl: string | null;
   chapterName: string;
-  tafsir: string;
-  transliteration: string; 
 };
 
 export default function HomePage() {
@@ -18,39 +17,38 @@ export default function HomePage() {
   const [isNavigating, setIsNavigating] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isAudioLoading, setIsAudioLoading] = useState(false);
-  const [currentVerseNumber, setCurrentVerseNumber] = useState<{surah: number, ayat: number} | null>(null);
-  const [showTafsir, setShowTafsir] = useState(false);
+  const [currentVerseNumber, setCurrentVerseNumber] = useState<number | null>(null);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const fetchSpecificVerse = async (surahNumber: number, ayatNumber: number) => {
-    if (!surahNumber || !ayatNumber) return;
+  const fetchSpecificVerse = async (verseNumber: number) => {
+    if (verseNumber < 1 || verseNumber > 6236) return;
     
     setIsNavigating(true);
     if(audioRef.current) audioRef.current.pause();
     setIsPlaying(false);
     setIsAudioLoading(false);
-    setShowTafsir(false);
 
     try {
-      // Panggil "RESEPSIONIS" kita di /api/quran
-      const response = await fetch(`/api/quran?surah=${surahNumber}&ayat=${ayatNumber}`);
+      // Kembali memanggil alquran.cloud secara langsung
+      const response = await fetch(`http://api.alquran.cloud/v1/ayah/${verseNumber}/editions/quran-uthmani,id.indonesian,ar.alafasy`);
       const data = await response.json();
   
       if (data.code === 200) {
-        const verseData = data.data;
+        const arabicData = data.data[0];
+        const translationData = data.data[1];
+        const audioData = data.data[2];
+
         setVerse({
-          verse_key: `${verseData.surah.number}:${verseData.number.inSurah}`,
-          text_uthmani: verseData.text.arab,
-          translation: verseData.translation.id,
-          audioUrl: verseData.audio.primary,
-          chapterName: verseData.surah.name.transliteration.id,
-          tafsir: verseData.tafsir.id.kemenag.short,
-          transliteration: verseData.transliteration.id,
+          verse_key: `${arabicData.surah.number}:${arabicData.numberInSurah}`,
+          text_uthmani: arabicData.text,
+          translation: translationData.text,
+          audioUrl: audioData.audio,
+          chapterName: arabicData.surah.englishName,
         });
-        setCurrentVerseNumber({ surah: verseData.surah.number, ayat: verseData.number.inSurah });
+        setCurrentVerseNumber(verseNumber);
       } else {
-        throw new Error(data.message);
+        throw new Error(data.status);
       }
     } catch (error) {
       console.error("TERJADI ERROR:", error);
@@ -61,33 +59,20 @@ export default function HomePage() {
 
   const fetchRandomVerse = async () => {
     setIsLoading(true);
-    const randomSurah = Math.floor(Math.random() * 114) + 1;
-    
-    const surahInfoResponse = await fetch(`https://quran-api-id.vercel.app/surahs/${randomSurah}`);
-    const surahInfoData = await surahInfoResponse.json();
-    const totalAyat = surahInfoData.data.numberOfVerses;
-
-    const randomAyat = Math.floor(Math.random() * totalAyat) + 1;
-    
-    await fetchSpecificVerse(randomSurah, randomAyat);
+    const randomVerseNumber = Math.floor(Math.random() * 6236) + 1;
+    await fetchSpecificVerse(randomVerseNumber);
     setIsLoading(false);
   };
 
   const handlePrevious = () => {
-    if (currentVerseNumber && (currentVerseNumber.ayat > 1)) {
-      fetchSpecificVerse(currentVerseNumber.surah, currentVerseNumber.ayat - 1);
+    if (currentVerseNumber) {
+      fetchSpecificVerse(currentVerseNumber - 1);
     }
   };
 
-  const handleNext = async () => {
+  const handleNext = () => {
     if (currentVerseNumber) {
-      const surahInfoResponse = await fetch(`https://quran-api-id.vercel.app/surahs/${currentVerseNumber.surah}`);
-      const surahInfoData = await surahInfoResponse.json();
-      const totalAyat = surahInfoData.data.numberOfVerses;
-      
-      if (currentVerseNumber.ayat < totalAyat) {
-        fetchSpecificVerse(currentVerseNumber.surah, currentVerseNumber.ayat + 1);
-      }
+      fetchSpecificVerse(currentVerseNumber + 1);
     }
   };
 
@@ -121,55 +106,34 @@ export default function HomePage() {
     }
   }, [verse]);
 
-
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-8 text-center bg-gray-50">
       
       {verse && (
         <div className="mb-8 max-w-2xl w-full">
           <div className="flex justify-between mb-4">
-            <button onClick={handlePrevious} disabled={isNavigating || (currentVerseNumber && currentVerseNumber.ayat === 1 && currentVerseNumber.surah === 1)} className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50">‹ Ayat Sebelumnya</button>
-            <button onClick={handleNext} disabled={isNavigating} className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50">Ayat Berikutnya ›</button>
+            <button onClick={handlePrevious} disabled={isNavigating || currentVerseNumber === 1} className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50">‹ Ayat Sebelumnya</button>
+            <button onClick={handleNext} disabled={isNavigating || currentVerseNumber === 6236} className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50">Ayat Berikutnya ›</button>
           </div>
 
           <div className="rounded-lg bg-white p-8 shadow-xl text-left">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-gray-800 mb-1">{verse.chapterName}</h2>
-              <p className="mb-4 text-lg font-semibold text-gray-700">{verse.verse_key}</p>
+              <p className="mb-4 text-lg font-semibold text-gray-700">{verse.verse_key.replace(':', ' : ')}</p>
             </div>
             
             {verse.audioUrl && <audio ref={audioRef} src={verse.audioUrl} preload="auto" />}
 
             <p 
-              className="text-4xl leading-relaxed text-right dir-rtl mb-4" 
+              className="text-4xl leading-relaxed text-right dir-rtl mb-6" 
               style={{ fontFamily: 'var(--font-quran)' }}
             >
               {verse.text_uthmani}
             </p>
             
-            <p className="text-gray-500 italic mb-6">
-              {verse.transliteration}
-            </p>
-            
             <p className="text-gray-800">{verse.translation}</p>
 
-            <div className="mt-6 pt-4 border-t">
-              <button 
-                onClick={() => setShowTafsir(!showTafsir)} 
-                className="text-sm text-blue-600 hover:underline"
-              >
-                {showTafsir ? 'Sembunyikan Tafsir' : 'Tampilkan Tafsir'}
-              </button>
-              
-              {showTafsir && (
-                <div className="mt-2 p-4 bg-gray-100 rounded-lg">
-                  <h3 className="font-bold mb-2">Tafsir (Kemenag Ringkas):</h3>
-                  <p className="text-sm text-gray-700 whitespace-pre-wrap">{verse.tafsir}</p>
-                </div>
-              )}
-            </div>
-
-            <div className="mt-4 text-center">
+            <div className="mt-4 pt-4 border-t text-center">
               {verse.audioUrl ? (
                 <button 
                   onClick={handlePlayPause}
