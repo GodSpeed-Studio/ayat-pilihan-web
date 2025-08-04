@@ -30,7 +30,7 @@ export default function HomePage() {
     setIsAudioLoading(false);
 
     try {
-      // Kembali memanggil alquran.cloud secara langsung
+      // Kembali memanggil alquran.cloud secara langsung untuk data yang pasti ada
       const response = await fetch(`http://api.alquran.cloud/v1/ayah/${verseNumber}/editions/quran-uthmani,id.indonesian,ar.alafasy`);
       const data = await response.json();
   
@@ -65,13 +65,13 @@ export default function HomePage() {
   };
 
   const handlePrevious = () => {
-    if (currentVerseNumber) {
+    if (currentVerseNumber && currentVerseNumber > 1) {
       fetchSpecificVerse(currentVerseNumber - 1);
     }
   };
 
   const handleNext = () => {
-    if (currentVerseNumber) {
+    if (currentVerseNumber && currentVerseNumber < 6236) {
       fetchSpecificVerse(currentVerseNumber + 1);
     }
   };
