@@ -3,7 +3,9 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import * as htmlToImage from 'html-to-image';
 import QuoteCard from './QuoteCard';
-import { surahList } from './surahData'; // <-- Impor "kamus" kita
+import { surahList } from './surahData';
+// Impor "juru pesan" kita
+import toast from 'react-hot-toast';
 
 type Verse = {
   verse_key: string;
@@ -13,7 +15,6 @@ type Verse = {
   chapterName: string;
 };
 
-// Fungsi kecil untuk mencari nama surah berdasarkan nomor
 const getIndonesianSurahName = (surahNumber: number): string => {
   const surah = surahList.find(s => s.number === surahNumber);
   return surah ? surah.name : 'Unknown Surah';
@@ -48,7 +49,6 @@ export default function HomePage() {
           text_uthmani: arabicData.text,
           translation: translationData.text,
           audioUrl: audioData.audio,
-          // Gunakan fungsi pencari kita untuk mendapatkan nama surah Indonesia
           chapterName: getIndonesianSurahName(arabicData.surah.number),
         });
         setCurrentVerseNumber(verseNumber);
@@ -57,7 +57,7 @@ export default function HomePage() {
       }
     } catch (error) {
       console.error("TERJADI ERROR:", error);
-      alert("Gagal mengambil data. Silakan cek konsol browser.");
+      toast.error("Gagal mengambil data ayat."); // Notifikasi jika error
     }
     setIsNavigating(false);
   };
@@ -73,17 +73,22 @@ export default function HomePage() {
     if (quoteCardRef.current === null) {
       return;
     }
-    htmlToImage.toPng(quoteCardRef.current, { cacheBust: true })
+    
+    // Tampilkan notifikasi loading saat gambar mulai dibuat
+    const promise = htmlToImage.toPng(quoteCardRef.current, { cacheBust: true })
       .then((dataUrl) => {
         const link = document.createElement('a');
         link.download = `ayat-pilihan-${verse?.verse_key.replace(':','_')}.png`;
         link.href = dataUrl;
         link.click();
-      })
-      .catch((err) => {
-        console.log(err);
-        alert('Gagal membuat gambar, silakan coba lagi.');
       });
+
+    // Gunakan toast.promise untuk menampilkan status notifikasi
+    toast.promise(promise, {
+      loading: 'Membuat gambar...',
+      success: 'Gambar berhasil diunduh!',
+      error: 'Gagal membuat gambar.',
+    });
   }, [verse]);
 
   const handlePrevious = () => { if (currentVerseNumber && currentVerseNumber > 1) fetchSpecificVerse(currentVerseNumber - 1); };
