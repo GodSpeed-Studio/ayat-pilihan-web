@@ -3,8 +3,7 @@
 import type { Metadata } from "next";
 import { Inter, Noto_Naskh_Arabic } from "next/font/google";
 import "./globals.css";
-// Impor "panggung" notifikasi
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast'; // Pastikan import ini ada
 
 const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
 const notoNaskh = Noto_Naskh_Arabic({ subsets: ["arabic"], weight: "400", variable: '--font-quran' });
@@ -22,8 +21,7 @@ export default function RootLayout({
   return (
     <html lang="id" className={`${inter.variable} ${notoNaskh.variable}`}>
       <body>
-        {/* Letakkan "panggung" di sini agar bisa diakses semua halaman */}
-        <Toaster position="top-center" />
+        <Toaster position="top-center" /> {/* Pastikan komponen ini ada */}
         {children}
       </body>
     </html>
