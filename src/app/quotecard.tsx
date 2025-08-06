@@ -28,7 +28,6 @@ const QuoteCard = forwardRef<HTMLDivElement, QuoteCardProps>(({ verse }, ref) =>
           {verse.text_uthmani}
         </p>
         
-        {/* INI BAGIAN YANG DIPERBAIKI (tanda kutip dihapus) */}
         <p className="text-4xl text-gray-600 px-12">
           {verse.translation}
         </p>
