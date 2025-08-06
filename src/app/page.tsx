@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import * as htmlToImage from 'html-to-image';
 import QuoteCard from './QuoteCard';
+import { surahList } from './surahData'; // <-- Impor "kamus" kita
 
 type Verse = {
   verse_key: string;
@@ -10,6 +11,12 @@ type Verse = {
   translation: string;
   audioUrl: string | null;
   chapterName: string;
+};
+
+// Fungsi kecil untuk mencari nama surah berdasarkan nomor
+const getIndonesianSurahName = (surahNumber: number): string => {
+  const surah = surahList.find(s => s.number === surahNumber);
+  return surah ? surah.name : 'Unknown Surah';
 };
 
 export default function HomePage() {
@@ -41,7 +48,8 @@ export default function HomePage() {
           text_uthmani: arabicData.text,
           translation: translationData.text,
           audioUrl: audioData.audio,
-          chapterName: arabicData.surah.englishName,
+          // Gunakan fungsi pencari kita untuk mendapatkan nama surah Indonesia
+          chapterName: getIndonesianSurahName(arabicData.surah.number),
         });
         setCurrentVerseNumber(verseNumber);
       } else {
