@@ -30,7 +30,7 @@ export default function HomePage() {
     setIsPlaying(false);
     setIsAudioLoading(false);
     try {
-      const response = await fetch(`http://api.alquran.cloud/v1/ayah/${verseNumber}/editions/quran-uthmani,id.indonesian,ar.alafasy`);
+      const response = await fetch(`https://api.alquran.cloud/v1/ayah/${verseNumber}/editions/quran-uthmani,id.indonesian,ar.alafasy`);
       const data = await response.json();
       if (data.code === 200) {
         const arabicData = data.data[0];
