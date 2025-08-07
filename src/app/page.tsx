@@ -26,7 +26,7 @@ export default function HomePage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isAudioLoading, setIsAudioLoading] = useState(false);
   const [currentVerseNumber, setCurrentVerseNumber] = useState<number | null>(null);
-
+  
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const quoteCardRef = useRef<HTMLDivElement>(null);
 
@@ -67,12 +67,11 @@ export default function HomePage() {
     await fetchSpecificVerse(randomVerseNumber);
     setIsLoading(false);
   };
-
+  
   const handleShare = useCallback(() => {
     if (quoteCardRef.current === null) {
       return;
     }
-
     const promise = htmlToImage.toPng(quoteCardRef.current, { cacheBust: true })
       .then((dataUrl) => {
         const link = document.createElement('a');
@@ -80,7 +79,6 @@ export default function HomePage() {
         link.href = dataUrl;
         link.click();
       });
-
     toast.promise(promise, {
       loading: 'Membuat gambar...',
       success: 'Gambar berhasil diunduh!',
@@ -123,38 +121,42 @@ export default function HomePage() {
 
       <main className="flex min-h-screen flex-col items-center justify-center p-4 text-center bg-gray-50">
         {verse && (
-          <div className="mb-8 max-w-2xl w-full">
-            <div className="flex justify-between mb-3 gap-2">
-              <button onClick={handlePrevious} disabled={isNavigating || currentVerseNumber === 1} className="w-full px-3 py-2 text-sm sm:text-base bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50">‹ Sebelumnya</button>
-              <button onClick={handleNext} disabled={isNavigating || currentVerseNumber === 6236} className="w-full px-3 py-2 text-sm sm:text-base bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50">Berikutnya ›</button>
-            </div>
-
+          <div className="mb-4 max-w-2xl w-full"> {/* Margin bawah dikurangi */}
             <div className="rounded-lg bg-white p-4 sm:p-8 shadow-xl text-left">
               <div className="text-center">
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-1">{verse.chapterName}</h2>
                 <p className="mb-4 text-base sm:text-lg font-semibold text-gray-700">{verse.verse_key.replace(':', ' : ')}</p>
               </div>
-
+              
               {verse.audioUrl && <audio ref={audioRef} src={verse.audioUrl} preload="auto" />}
-              <p className="text-3xl sm:text-4xl leading-relaxed text-right dir-rtl mb-6 text-gray-800" style={{ fontFamily: 'var(--font-quran)' }}>{verse.text_uthmani}</p>
+              <p className="text-3xl sm:text-4xl leading-relaxed text-right dir-rtl mb-6" style={{ fontFamily: 'var(--font-quran)' }}>{verse.text_uthmani}</p>
               <p className="text-gray-800 text-base">{verse.translation}</p>
 
-              <div className="mt-4 pt-4 border-t text-center flex justify-center items-center gap-2 sm:gap-4">
-                {verse.audioUrl ? (
-                  <button onClick={handlePlayPause} disabled={isAudioLoading} className="flex-grow justify-center rounded-full bg-green-500 px-4 py-2 sm:px-6 text-sm sm:text-base font-semibold text-white transition-all duration-200 hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-wait">
-                    {isAudioLoading ? 'Memuat...' : isPlaying ? '⏹️ Hentikan' : '▶️ Dengarkan'}
-                  </button>
-                ) : (
-                  <button disabled className="flex-grow justify-center rounded-full bg-gray-300 px-4 py-2 sm:px-6 text-sm sm:text-base font-semibold text-gray-500 cursor-not-allowed">Audio -</button>
-                )}
-                <button onClick={handleShare} className="flex-grow justify-center rounded-full bg-blue-500 px-4 py-2 sm:px-6 text-sm sm:text-base font-semibold text-white transition hover:bg-blue-600">
-                  Bagikan ↗️
-                </button>
+              {/* REVISI: Tombol Navigasi sekarang ada di dalam kartu */}
+              <div className="mt-6 pt-4 border-t flex justify-between gap-2">
+                <button onClick={handlePrevious} disabled={isNavigating || currentVerseNumber === 1} className="w-full px-3 py-2 text-sm sm:text-base bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50">‹ Sebelumnya</button>
+                <button onClick={handleNext} disabled={isNavigating || currentVerseNumber === 6236} className="w-full px-3 py-2 text-sm sm:text-base bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50">Berikutnya ›</button>
               </div>
             </div>
           </div>
         )}
-
+        
+        {/* REVISI: Tombol Aksi sekarang ada di luar kartu */}
+        {verse && (
+          <div className="flex justify-center items-center gap-2 sm:gap-4 mb-4 w-full max-w-md">
+            {verse.audioUrl ? (
+              <button onClick={handlePlayPause} disabled={isAudioLoading} className="flex-grow justify-center rounded-full bg-green-500 px-4 py-2 sm:px-6 text-sm sm:text-base font-semibold text-white transition-all duration-200 hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-wait">
+                {isAudioLoading ? 'Memuat...' : isPlaying ? '⏹️ Hentikan' : '▶️ Dengarkan'}
+              </button>
+            ) : (
+              <button disabled className="flex-grow justify-center rounded-full bg-gray-300 px-4 py-2 sm:px-6 text-sm sm:text-base font-semibold text-gray-500 cursor-not-allowed">Audio -</button>
+            )}
+            <button onClick={handleShare} className="flex-grow justify-center rounded-full bg-blue-500 px-4 py-2 sm:px-6 text-sm sm:text-base font-semibold text-white transition hover:bg-blue-600">
+              Bagikan ↗️
+            </button>
+          </div>
+        )}
+        
         {!verse && (
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-gray-800"> Ayat Pilihan </h1>
