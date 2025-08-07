@@ -9,13 +9,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      // Kita definisikan ulang warna di sini agar 100% solid
+      // Kita timpa (override) warna default dengan versi solid (hex code)
+      // agar tidak ada lagi masalah transparansi.
       colors: {
-        'custom-blue-600': '#2563EB',
-        'custom-blue-700': '#1D4ED8',
-        'custom-green-500': '#22C55E',
-        'custom-green-600': '#16A34A',
-        'custom-gray': {
+        gray: {
           50: '#F9FAFB',
           200: '#E5E7EB',
           300: '#D1D5DB',
@@ -24,6 +21,15 @@ const config: Config = {
           600: '#4B5563',
           700: '#374151',
           800: '#1F2937',
+        },
+        blue: {
+          500: '#3B82F6',
+          600: '#2563EB',
+          700: '#1D4ED8',
+        },
+        green: {
+          500: '#22C55E',
+          600: '#16A34A',
         },
       },
       fontFamily: {
