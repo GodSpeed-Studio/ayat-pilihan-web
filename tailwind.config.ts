@@ -1,3 +1,4 @@
+// File: tailwind.config.ts
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -8,7 +9,23 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      // Pastikan bagian fontFamily ini ada
+      // Kita definisikan ulang warna di sini agar 100% solid
+      colors: {
+        'custom-blue-600': '#2563EB',
+        'custom-blue-700': '#1D4ED8',
+        'custom-green-500': '#22C55E',
+        'custom-green-600': '#16A34A',
+        'custom-gray': {
+          50: '#F9FAFB',
+          200: '#E5E7EB',
+          300: '#D1D5DB',
+          400: '#9CA3AF',
+          500: '#6B7280',
+          600: '#4B5563',
+          700: '#374151',
+          800: '#1F2937',
+        },
+      },
       fontFamily: {
         quran: ['var(--font-quran)'],
       },
