@@ -129,13 +129,13 @@ export default function HomePage() {
               </div>
               
               {verse.audioUrl && <audio ref={audioRef} src={verse.audioUrl} preload="auto" />}
-              <p className="text-3xl sm:text-4xl leading-relaxed text-right dir-rtl mb-6" style={{ fontFamily: 'var(--font-quran)' }}>{verse.text_uthmani}</p>
+              <p className="text-3xl sm:text-4xl leading-relaxed text-right dir-rtl mb-6 solid-arabic-text" style={{ fontFamily: 'var(--font-quran)' }}>{verse.text_uthmani}</p>
               <p className="text-gray-800 text-base">{verse.translation}</p>
 
               {/* REVISI: Tombol Navigasi sekarang ada di dalam kartu */}
               <div className="mt-6 pt-4 border-t flex justify-between gap-2">
-                <button onClick={handlePrevious} disabled={isNavigating || currentVerseNumber === 1} className="w-full px-3 py-2 text-sm sm:text-base bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50">‹ Sebelumnya</button>
-                <button onClick={handleNext} disabled={isNavigating || currentVerseNumber === 6236} className="w-full px-3 py-2 text-sm sm:text-base bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50">Berikutnya ›</button>
+                <button onClick={handlePrevious} disabled={isNavigating || currentVerseNumber === 1} lassName="w-full px-3 py-2 text-sm sm:text-base solid-nav-button rounded-lg hover:bg-gray-300 disabled:opacity-50">‹ Sebelumnya</button>
+                <button onClick={handleNext} disabled={isNavigating || currentVerseNumber === 6236} lassName="w-full px-3 py-2 text-sm sm:text-base solid-nav-button rounded-lg hover:bg-gray-300 disabled:opacity-50">Berikutnya ›</button>
               </div>
             </div>
           </div>

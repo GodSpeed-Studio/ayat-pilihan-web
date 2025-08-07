@@ -25,3 +25,21 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+/* PERBAIKAN FINAL WARNA SOLID (LANGSUNG DI CSS) */
+.solid-arabic-text {
+  color: #1F2937 !important; /* Abu-abu Gelap Solid */
+}
+
+.solid-nav-button {
+  background-color: #E5E7EB !important; /* Abu-abu Terang Solid */
+  color: #374151 !important; /* Teks Abu-abu Gelap Solid */
+}
+
+.solid-nav-button:hover {
+  background-color: #D1D5DB !important; /* Abu-abu Hover Solid */
+}
+
+.solid-nav-button:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
