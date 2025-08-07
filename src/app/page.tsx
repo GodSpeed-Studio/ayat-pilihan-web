@@ -124,7 +124,7 @@ export default function HomePage() {
           <div className="mb-4 max-w-2xl w-full"> {/* Margin bawah dikurangi */}
             <div className="rounded-lg bg-white p-4 sm:p-8 shadow-xl text-left">
               <div className="text-center">
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-1">{verse.chapterName}</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-1">Surah {verse.chapterName}</h2>
                 <p className="mb-4 text-base sm:text-lg font-semibold text-gray-700">{verse.verse_key.replace(':', ' : ')}</p>
               </div>
               
