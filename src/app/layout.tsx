@@ -1,9 +1,10 @@
-// File: src/app/layout.tsx
+// Lokasi File: src/app/layout.tsx
 
 import type { Metadata } from "next";
 import { Inter, Noto_Naskh_Arabic } from "next/font/google";
 import "./globals.css";
-import { Toaster } from 'react-hot-toast'; // Pastikan import ini ada
+import { Toaster } from 'react-hot-toast';
+import ClientLayout from "./ClientLayout"; // <-- Impor komponen pembungkus kita
 
 const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
 const notoNaskh = Noto_Naskh_Arabic({ subsets: ["arabic"], weight: "400", variable: '--font-quran' });
@@ -21,8 +22,11 @@ export default function RootLayout({
   return (
     <html lang="id" className={`${inter.variable} ${notoNaskh.variable}`}>
       <body>
-        <Toaster position="top-center" /> {/* Pastikan komponen ini ada */}
-        {children}
+        <Toaster position="top-center" />
+        {/* Gunakan ClientLayout untuk membungkus children */}
+        <ClientLayout>
+          {children}
+        </ClientLayout>
       </body>
     </html>
   );
