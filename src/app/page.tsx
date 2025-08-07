@@ -134,8 +134,8 @@ export default function HomePage() {
 
               {/* REVISI: Tombol Navigasi sekarang ada di dalam kartu */}
               <div className="mt-6 pt-4 border-t flex justify-between gap-2">
-                <button onClick={handlePrevious} disabled={isNavigating || currentVerseNumber === 1} lassName="w-full px-3 py-2 text-sm sm:text-base solid-nav-button rounded-lg hover:bg-gray-300 disabled:opacity-50">‹ Sebelumnya</button>
-                <button onClick={handleNext} disabled={isNavigating || currentVerseNumber === 6236} lassName="w-full px-3 py-2 text-sm sm:text-base solid-nav-button rounded-lg hover:bg-gray-300 disabled:opacity-50">Berikutnya ›</button>
+                <button onClick={handlePrevious} disabled={isNavigating || currentVerseNumber === 1} ClassName="w-full px-3 py-2 text-sm sm:text-base solid-nav-button rounded-lg hover:bg-gray-300 disabled:opacity-50">‹ Sebelumnya</button>
+                <button onClick={handleNext} disabled={isNavigating || currentVerseNumber === 6236} ClassName="w-full px-3 py-2 text-sm sm:text-base solid-nav-button rounded-lg hover:bg-gray-300 disabled:opacity-50">Berikutnya ›</button>
               </div>
             </div>
           </div>
