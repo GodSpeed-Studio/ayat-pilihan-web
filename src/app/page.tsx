@@ -121,7 +121,7 @@ export default function HomePage() {
 
       <main className="flex min-h-screen flex-col items-center justify-center p-4 text-center bg-gray-50">
         {verse && (
-          <div className="mb-4 max-w-2xl w-full"> {/* Margin bawah dikurangi */}
+          <div className="mb-4 max-w-2xl w-full">
             <div className="rounded-lg bg-white p-4 sm:p-8 shadow-xl text-left">
               <div className="text-center">
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-1">Surah {verse.chapterName}</h2>
@@ -132,28 +132,15 @@ export default function HomePage() {
               <p className="text-3xl sm:text-4xl leading-relaxed text-right dir-rtl mb-6 solid-arabic-text" style={{ fontFamily: 'var(--font-quran)' }}>{verse.text_uthmani}</p>
               <p className="text-gray-800 text-base">{verse.translation}</p>
 
-              {/* REVISI: Tombol Navigasi sekarang ada di dalam kartu */}
               <div className="mt-6 pt-4 border-t flex justify-between gap-2">
-                <button 
-                  onClick={handlePrevious} 
-                  disabled={isNavigating || (currentVerseNumber && currentVerseNumber.ayat === 1 && currentVerseNumber.surah === 1)} 
-                  className="w-full px-3 py-2 text-sm sm:text-base solid-nav-button rounded-lg disabled:opacity-50"
-                >
-                  ‹ Sebelumnya
-                </button>
-                <button 
-                  onClick={handleNext} 
-                  disabled={isNavigating} 
-                  className="w-full px-3 py-2 text-sm sm:text-base solid-nav-button rounded-lg disabled:opacity-50"
-                >
-                  Berikutnya ›
-                </button>
+                {/* INI BAGIAN YANG DIPERBAIKI */}
+                <button onClick={handlePrevious} disabled={isNavigating || !currentVerseNumber || currentVerseNumber <= 1} className="w-full px-3 py-2 text-sm sm:text-base solid-nav-button rounded-lg disabled:opacity-50">‹ Sebelumnya</button>
+                <button onClick={handleNext} disabled={isNavigating || !currentVerseNumber || currentVerseNumber >= 6236} className="w-full px-3 py-2 text-sm sm:text-base solid-nav-button rounded-lg disabled:opacity-50">Berikutnya ›</button>
               </div>
             </div>
           </div>
         )}
         
-        {/* REVISI: Tombol Aksi sekarang ada di luar kartu */}
         {verse && (
           <div className="flex justify-center items-center gap-2 sm:gap-4 mb-4 w-full max-w-md">
             {verse.audioUrl ? (
