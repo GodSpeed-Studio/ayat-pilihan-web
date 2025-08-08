@@ -13,7 +13,7 @@ export default function DukungPage() {
 
         <div className="prose prose-lg max-w-none text-gray-700 mx-auto">
           <p>
-            Alhamdulillah, jika Anda sampai ke halaman ini, kami berharap "Ayat Pilihan" telah memberikan sedikit ketenangan atau inspirasi bagi Anda. Proyek ini kami bangun dengan semangat untuk berbagi dan akan selalu gratis untuk digunakan.
+            Alhamdulillah, jika Anda sampai ke halaman ini, kami berharap &apos;Ayat Pilihan&apos; telah memberikan sedikit ketenangan atau inspirasi bagi Anda. Proyek ini kami bangun dengan semangat untuk berbagi dan akan selalu gratis untuk digunakan.
           </p>
           <p>
             Jika Anda merasa terbantu dan ingin mendukung keberlangsungan proyek ini, dukungan Anda akan sangat berarti. Donasi yang terkumpul akan kami gunakan sepenuhnya untuk biaya operasional (server & domain) serta pengembangan fitur-fitur baru di masa depan.
@@ -48,7 +48,7 @@ export default function DukungPage() {
 
         <div className="prose prose-lg max-w-none text-gray-700 mx-auto mt-8">
             <p className="font-semibold">
-                Berapapun dukungan Anda, tidak ada yang terlalu kecil. Terima kasih telah menjadi bagian dari perjalanan "Ayat Pilihan". Semoga Allah membalas kebaikan Anda dengan pahala dan keberkahan yang berlipat ganda. Aamiin ya Rabbal'alamin.
+                Berapapun dukungan Anda, tidak ada yang terlalu kecil. Terima kasih telah menjadi bagian dari perjalanan &apos;Ayat Pilihan&apos;. Semoga Allah membalas kebaikan Anda dengan pahala dan keberkahan yang berlipat ganda. Aamiin ya Rabbal'alamin.
             </p>
         </div>
 

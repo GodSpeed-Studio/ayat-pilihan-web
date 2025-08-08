@@ -15,7 +15,7 @@ export default function PanduanPage() {
         {/* 'prose' adalah kelas dari Tailwind untuk styling teks otomatis agar indah */}
         <div className="prose prose-lg max-w-none text-gray-700">
           <p className="italic text-center">
-            "Aplikasi ini lahir dari sebuah kebiasaan pribadi: saat hati merasa gundah atau justru bahagia, saya membuka Al-Qur'an secara acak. Seringkali, ayat yang terbuka terasa seperti jawaban atau penegasan langsung dari Allah. Momen 'percakapan' inilah yang menjadi inspirasi Ayat Pilihan."
+            &apos;Aplikasi ini lahir dari sebuah kebiasaan pribadi: saat hati merasa gundah atau justru bahagia, saya membuka Al-Qur&apos;an secara acak. Seringkali, ayat yang terbuka terasa seperti jawaban atau penegasan langsung dari Allah. Momen &apos;&apos;percakapan&apos; inilah yang menjadi inspirasi Ayat Pilihan.&apos;
           </p>
 
           <h2 className="font-bold mt-8 mb-4 text-2xl">Adab Sebelum Memulai</h2>
@@ -23,7 +23,7 @@ export default function PanduanPage() {
             <li><strong>Luruskan Niat:</strong> Niatkan dalam hati untuk mencari petunjuk, ketenangan, atau motivasi dari Allah SWT.</li>
             <li><strong>Berserah Diri (Tawakkal):</strong> Kosongkan pikiran dari segala ekspektasi dan pasrahkan hati Anda sepenuhnya.</li>
             <li><strong>Rasakan & Berdoa:</strong> Rasakan getaran dalam jiwa Anda, berdoa sesuai dengan apa yang Anda rasakan atau tanyakan.</li>
-            <li><strong>Buka "Halaman" Anda:</strong> Setelah hati terasa siap, baru tekan tombol "CARI AYAT ACAK".</li>
+            <li><strong>Buka &apos;Halaman&apos; Anda:</strong> Setelah hati terasa siap, baru tekan tombol &apos;CARI AYAT ACAK&apos;.</li>
           </ol>
 
           <h2 className="font-bold mt-8 mb-4 text-2xl">Penting untuk Dipahami</h2>
