@@ -67,27 +67,26 @@ export default function HomePage() {
     await fetchSpecificVerse(randomVerseNumber);
     setIsLoading(false);
   };
-  
-  const handleShare = useCallback(async () => {
+  // GANTI SELURUH FUNGSI INI DENGAN VERSI BARU
+const handleShare = useCallback(async () => {
     if (quoteCardRef.current === null) {
       return;
     }
 
-    const shareToast = toast.loading('Mempersiapkan gambar HD...');
+    const shareToast = toast.loading('Mempersiapkan gambar...');
 
     try {
-      const options = { 
-        cacheBust: true,
-        pixelRatio: window.devicePixelRatio || 2 
-      };
-
-      const blob = await htmlToImage.toPng(quoteCardRef.current, options);
+      // PERBAIKAN: Gunakan format JPEG dengan resolusi 2x (paling kompatibel)
+      const blob = await htmlToImage.toJpeg(quoteCardRef.current, { 
+        quality: 0.95, // Kualitas 95%
+        pixelRatio: 2  // Resolusi 2x (cukup tajam dan aman)
+      });
 
       if (!blob) {
         throw new Error('Gagal membuat file gambar dari canvas');
       }
 
-      const file = new File([blob], `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`, { type: 'image/png' });
+      const file = new File([blob], `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.jpeg`, { type: 'image/jpeg' });
       
       if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
@@ -97,9 +96,10 @@ export default function HomePage() {
         });
         toast.success('Berhasil dibagikan!', { id: shareToast });
       } else {
-        const dataUrl = await htmlToImage.toPng(quoteCardRef.current, options);
+        // Fallback untuk desktop juga diubah ke Jpeg
+        const dataUrl = await htmlToImage.toJpeg(quoteCardRef.current, { quality: 0.95, pixelRatio: 2 });
         const link = document.createElement('a');
-        link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`;
+        link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.jpeg`;
         link.href = dataUrl;
         link.click();
         toast.success('Gambar berhasil diunduh!', { id: shareToast });
