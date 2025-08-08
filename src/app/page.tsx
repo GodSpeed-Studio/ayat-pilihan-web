@@ -4,7 +4,8 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import * as htmlToImage from 'html-to-image';
 import QuoteCard from './QuoteCard';
 import { surahList } from './surahData';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
+import Link from 'next/link'; // Jangan lupa import Link
 
 type Verse = {
   verse_key: string;
@@ -68,25 +69,18 @@ export default function HomePage() {
     setIsLoading(false);
   };
   
-  // FUNGSI BERBAGI YANG DIKEMBALIKAN KE VERSI DASAR
   const handleShare = useCallback(async () => {
     if (quoteCardRef.current === null) {
       return;
     }
-
     const shareToast = toast.loading('Mempersiapkan gambar...');
-
     try {
-      // Kembali ke dasar: Gunakan toBlob (menghasilkan PNG) tanpa opsi tambahan
-      const blob = await htmlToImage.toBlob(quoteCardRef.current, { cacheBust: true });
-
+      const blob = await htmlToImage.toPng(quoteCardRef.current, { cacheBust: true, pixelRatio: 2 });
       if (!blob) {
         throw new Error('Gagal membuat file gambar');
       }
-
       const file = new File([blob], `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`, { type: 'image/png' });
-
-      if (navigator.share && navigator.canShare({ files: [file] })) {
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           title: `Ayat Pilihan: ${verse?.chapterName} ${verse?.verse_key}`,
           text: `"${verse?.translation}" (Q.S. ${verse?.chapterName}: ${verse?.verse_key}) - Dibagikan dari Ayat Pilihan`,
@@ -94,8 +88,7 @@ export default function HomePage() {
         });
         toast.success('Berhasil dibagikan!', { id: shareToast });
       } else {
-        // Fallback download juga kembali ke dasar
-        const dataUrl = await htmlToImage.toPng(quoteCardRef.current);
+        const dataUrl = await htmlToImage.toPng(quoteCardRef.current, { pixelRatio: 2 });
         const link = document.createElement('a');
         link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`;
         link.href = dataUrl;
@@ -156,12 +149,12 @@ export default function HomePage() {
               </div>
               
               {verse.audioUrl && <audio ref={audioRef} src={verse.audioUrl} preload="auto" />}
-              <p className="text-3xl sm:text-4xl leading-relaxed text-right dir-rtl mb-6 solid-arabic-text" style={{ fontFamily: 'var(--font-quran)' }}>{verse.text_uthmani}</p>
+              <p className="text-3xl sm:text-4xl leading-relaxed text-right dir-rtl mb-6 text-gray-800" style={{ fontFamily: 'var(--font-quran)' }}>{verse.text_uthmani}</p>
               <p className="text-gray-800 text-base">{verse.translation}</p>
 
               <div className="mt-6 pt-4 border-t flex justify-between gap-2">
-                <button onClick={handlePrevious} disabled={isNavigating || !currentVerseNumber || currentVerseNumber <= 1} className="w-full px-3 py-2 text-sm sm:text-base solid-nav-button rounded-lg disabled:opacity-50">‹ Sebelumnya</button>
-                <button onClick={handleNext} disabled={isNavigating || !currentVerseNumber || currentVerseNumber >= 6236} className="w-full px-3 py-2 text-sm sm:text-base solid-nav-button rounded-lg disabled:opacity-50">Berikutnya ›</button>
+                <button onClick={handlePrevious} disabled={isNavigating || !currentVerseNumber || currentVerseNumber <= 1} className="w-full px-3 py-2 text-sm sm:text-base bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50">‹ Sebelumnya</button>
+                <button onClick={handleNext} disabled={isNavigating || !currentVerseNumber || currentVerseNumber >= 6236} className="w-full px-3 py-2 text-sm sm:text-base bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50">Berikutnya ›</button>
               </div>
             </div>
           </div>
@@ -193,6 +186,20 @@ export default function HomePage() {
           {isLoading ? (<> <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="http://www.w3.org/2000/svg"> <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle> <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg> Mencari... </>) : ('CARI AYAT ACAK')}
         </button>
       </main>
+
+      {/* PENAMBAHAN FOOTER BARU */}
+      <footer className="w-full text-center p-4 text-gray-500 text-sm">
+    <Link href="/panduan" className="hover:underline">
+      Panduan & Disclaimer
+    </Link>
+    <span className="mx-2">|</span>
+    {/* PENAMBAHAN LINK BARU */}
+    <Link href="/dukung" className="hover:underline">
+      Dukung Kami
+    </Link>
+    <span className="mx-2">|</span>
+    <span>© 2025 Ayat Pilihan</span>
+  </footer>
     </>
   );
 }
