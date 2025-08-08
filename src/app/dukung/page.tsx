@@ -37,10 +37,10 @@ export default function DukungPage() {
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Alternatif Lain</h2>
            {/* Ganti "NAMA_AKUN" dengan nama akun Anda di Trakteer/Saweria */}
           <div className="flex justify-center gap-4">
-            <a href="https://trakteer.id/ayatpilihan" target="_blank" rel="noopener noreferrer" className="bg-red-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-600 transition-colors no-underline">
+            <a href="[https://trakteer.id/NAMA_AKUN](https://trakteer.id/NAMA_AKUN)" target="_blank" rel="noopener noreferrer" className="bg-red-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-600 transition-colors no-underline">
               Trakteer
             </a>
-            <a href="https://saweria.co/ayatpilihan" target="_blank" rel="noopener noreferrer" className="bg-yellow-400 text-gray-800 font-bold py-2 px-6 rounded-lg hover:bg-yellow-500 transition-colors no-underline">
+            <a href="[https://saweria.co/NAMA_AKUN](https://saweria.co/NAMA_AKUN)" target="_blank" rel="noopener noreferrer" className="bg-yellow-400 text-gray-800 font-bold py-2 px-6 rounded-lg hover:bg-yellow-500 transition-colors no-underline">
               Saweria
             </a>
           </div>

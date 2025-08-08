@@ -1,28 +1,23 @@
 // File: src/app/layout.tsx
-import type { Metadata } from "next";
-import { Inter, Noto_Naskh_Arabic } from "next/font/google";
-import "./globals.css";
-import { Toaster } from 'react-hot-toast';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
 
-const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
-const notoNaskh = Noto_Naskh_Arabic({ subsets: ["arabic"], weight: "400", variable: '--font-quran' });
+const inter = Inter({ subsets: ['latin'] });
 
-export const metadata = {
-  title: "Ayat Pilihan",
-  description: "Temukan petunjuk dan ketenangan dalam Al-Qur'an.",
+export const metadata: Metadata = {
+  title: 'Ayat Pilihan',
+  description: 'Temukan petunjuk dan ketenangan dalam Al-Qur\'an.', // PERBAIKAN DI SINI
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="id" className={`${inter.variable} ${notoNaskh.variable}`}>
-      <body>
-        <Toaster position="top-center" />
-        {children}
-      </body>
+    <html lang="id">
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
