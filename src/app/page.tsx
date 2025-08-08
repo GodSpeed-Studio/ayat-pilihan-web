@@ -68,54 +68,54 @@ export default function HomePage() {
     setIsLoading(false);
   };
   
-// GANTI SELURUH FUNGSI INI dengan versi yang sudah di-upgrade
-
-const handleShare = useCallback(async () => {
-  if (quoteCardRef.current === null) {
-    return;
-  }
-
-  const shareToast = toast.loading('Mempersiapkan gambar berkualitas tinggi...');
-
-  try {
-    // Kita tambahkan opsi pixelRatio: 2 di sini
-    const blob = await htmlToImage.toBlob(quoteCardRef.current, { 
-      cacheBust: true,
-      pixelRatio: 2 // <--- PENAMBAHAN KUNCI UNTUK GAMBAR TAJAM
-    });
-
-    if (!blob) {
-      throw new Error('Gagal membuat file gambar dari canvas');
+  // FUNGSI HANDLESHARE YANG DI-UPGRADE KE JPEG
+  const handleShare = useCallback(async () => {
+    if (quoteCardRef.current === null) {
+      return;
     }
 
-    const file = new File([blob], `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`, { type: 'image/png' });
-    
-    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({
-        title: `Ayat Pilihan: ${verse?.chapterName} ${verse?.verse_key}`,
-        text: `"${verse?.translation}" (Q.S. ${verse?.chapterName}: ${verse?.verse_key}) - Dibagikan dari Ayat Pilihan`,
-        files: [file],
+    const shareToast = toast.loading('Mempersiapkan gambar berkualitas tinggi...');
+
+    try {
+      // PERUBAHAN: Gunakan toJpeg dengan kualitas 95% dan resolusi 2x
+      const blob = await htmlToImage.toJpeg(quoteCardRef.current, { 
+        quality: 0.95,
+        pixelRatio: 2
       });
-      toast.success('Berhasil dibagikan!', { id: shareToast });
-    } else {
-      // Fallback untuk desktop juga kita buat jadi high-res
-      const dataUrl = await htmlToImage.toPng(quoteCardRef.current, { pixelRatio: 2 });
-      const link = document.createElement('a');
-      link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`;
-      link.href = dataUrl;
-      link.click();
-      toast.success('Gambar berhasil diunduh!', { id: shareToast });
+
+      if (!blob) {
+        throw new Error('Gagal membuat file gambar dari canvas');
+      }
+
+      // PERUBAHAN: Ubah nama file dan tipe menjadi .jpeg
+      const file = new File([blob], `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.jpeg`, { type: 'image/jpeg' });
+      
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          title: `Ayat Pilihan: ${verse?.chapterName} ${verse?.verse_key}`,
+          text: `"${verse?.translation}" (Q.S. ${verse?.chapterName}: ${verse?.verse_key}) - Dibagikan dari Ayat Pilihan`,
+          files: [file],
+        });
+        toast.success('Berhasil dibagikan!', { id: shareToast });
+      } else {
+        // Fallback untuk desktop juga diubah ke Jpeg
+        const dataUrl = await htmlToImage.toJpeg(quoteCardRef.current, { quality: 0.95, pixelRatio: 2 });
+        const link = document.createElement('a');
+        link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.jpeg`;
+        link.href = dataUrl;
+        link.click();
+        toast.success('Gambar berhasil diunduh!', { id: shareToast });
+      }
+    } catch (err) {
+      if (err instanceof Error && err.name === 'AbortError') {
+        console.log('Proses berbagi dibatalkan oleh pengguna.');
+        toast.dismiss(shareToast);
+      } else {
+        console.error(err);
+        toast.error('Gagal membagikan gambar.', { id: shareToast });
+      }
     }
-  } catch (err) {
-    if (err instanceof Error && err.name === 'AbortError') {
-      console.log('Proses berbagi dibatalkan oleh pengguna.');
-      toast.dismiss(shareToast);
-    } else {
-      console.error(err);
-      toast.error('Gagal membagikan gambar.', { id: shareToast });
-    }
-  }
-}, [verse]);
+  }, [verse]);
 
   const handlePrevious = () => { if (currentVerseNumber && currentVerseNumber > 1) fetchSpecificVerse(currentVerseNumber - 1); };
   const handleNext = () => { if (currentVerseNumber && currentVerseNumber < 6236) fetchSpecificVerse(currentVerseNumber + 1); };
