@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import * as htmlToImage from 'html-to-image';
 import QuoteCard from './QuoteCard';
 import { surahList } from './surahData';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 type Verse = {
   verse_key: string;
@@ -68,22 +68,51 @@ export default function HomePage() {
     setIsLoading(false);
   };
   
-  const handleShare = useCallback(() => {
+  // FUNGSI HANDLESHARE YANG SUDAH DI-UPGRADE
+  const handleShare = useCallback(async () => {
     if (quoteCardRef.current === null) {
       return;
     }
-    const promise = htmlToImage.toPng(quoteCardRef.current, { cacheBust: true })
-      .then((dataUrl) => {
+
+    const shareToast = toast.loading('Mempersiapkan gambar...');
+
+    try {
+      const blob = await htmlToImage.toBlob(quoteCardRef.current, { cacheBust: true });
+
+      if (!blob) {
+        throw new Error('Gagal membuat file gambar dari canvas');
+      }
+
+      const file = new File([blob], `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`, { type: 'image/png' });
+      
+      // Cek apakah browser mendukung Web Share API untuk file
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        // Jika didukung (di HP), panggil menu share native
+        await navigator.share({
+          title: `Ayat Pilihan: ${verse?.chapterName} ${verse?.verse_key}`,
+          text: `"${verse?.translation}" (Q.S. ${verse?.chapterName}: ${verse?.verse_key}) - Dibagikan dari Ayat Pilihan`,
+          files: [file],
+        });
+        toast.success('Berhasil dibagikan!', { id: shareToast });
+      } else {
+        // Jika tidak didukung (di desktop), jalankan metode download biasa
+        const dataUrl = await htmlToImage.toPng(quoteCardRef.current, { cacheBust: true });
         const link = document.createElement('a');
-        link.download = `ayat-pilihan-${verse?.verse_key.replace(':','_')}.png`;
+        link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`;
         link.href = dataUrl;
         link.click();
-      });
-    toast.promise(promise, {
-      loading: 'Membuat gambar...',
-      success: 'Gambar berhasil diunduh!',
-      error: 'Gagal membuat gambar.',
-    });
+        toast.success('Gambar berhasil diunduh!', { id: shareToast });
+      }
+    } catch (err: any) {
+      // Menangani jika pengguna menutup menu share (AbortError)
+      if (err.name === 'AbortError') {
+        console.log('Proses berbagi dibatalkan oleh pengguna.');
+        toast.dismiss(shareToast);
+      } else {
+        console.error(err);
+        toast.error('Gagal membagikan gambar.', { id: shareToast });
+      }
+    }
   }, [verse]);
 
   const handlePrevious = () => { if (currentVerseNumber && currentVerseNumber > 1) fetchSpecificVerse(currentVerseNumber - 1); };
@@ -133,7 +162,6 @@ export default function HomePage() {
               <p className="text-gray-800 text-base">{verse.translation}</p>
 
               <div className="mt-6 pt-4 border-t flex justify-between gap-2">
-                {/* INI BAGIAN YANG DIPERBAIKI */}
                 <button onClick={handlePrevious} disabled={isNavigating || !currentVerseNumber || currentVerseNumber <= 1} className="w-full px-3 py-2 text-sm sm:text-base solid-nav-button rounded-lg disabled:opacity-50">‹ Sebelumnya</button>
                 <button onClick={handleNext} disabled={isNavigating || !currentVerseNumber || currentVerseNumber >= 6236} className="w-full px-3 py-2 text-sm sm:text-base solid-nav-button rounded-lg disabled:opacity-50">Berikutnya ›</button>
               </div>
