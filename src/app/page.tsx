@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import * as htmlToImage from 'html-to-image';
 import QuoteCard from './QuoteCard';
 import { surahList } from './surahData';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 type Verse = {
   verse_key: string;
@@ -67,8 +67,9 @@ export default function HomePage() {
     await fetchSpecificVerse(randomVerseNumber);
     setIsLoading(false);
   };
-  // GANTI SELURUH FUNGSI INI DENGAN VERSI BARU
-const handleShare = useCallback(async () => {
+  
+  // FUNGSI BERBAGI YANG DIKEMBALIKAN KE VERSI DASAR
+  const handleShare = useCallback(async () => {
     if (quoteCardRef.current === null) {
       return;
     }
@@ -76,19 +77,16 @@ const handleShare = useCallback(async () => {
     const shareToast = toast.loading('Mempersiapkan gambar...');
 
     try {
-      // PERBAIKAN: Gunakan format JPEG dengan resolusi 2x (paling kompatibel)
-      const blob = await htmlToImage.toJpeg(quoteCardRef.current, { 
-        quality: 0.95, // Kualitas 95%
-        pixelRatio: 2  // Resolusi 2x (cukup tajam dan aman)
-      });
+      // Kembali ke dasar: Gunakan toBlob (menghasilkan PNG) tanpa opsi tambahan
+      const blob = await htmlToImage.toBlob(quoteCardRef.current, { cacheBust: true });
 
       if (!blob) {
-        throw new Error('Gagal membuat file gambar dari canvas');
+        throw new Error('Gagal membuat file gambar');
       }
 
-      const file = new File([blob], `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.jpeg`, { type: 'image/jpeg' });
-      
-      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      const file = new File([blob], `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`, { type: 'image/png' });
+
+      if (navigator.share && navigator.canShare({ files: [file] })) {
         await navigator.share({
           title: `Ayat Pilihan: ${verse?.chapterName} ${verse?.verse_key}`,
           text: `"${verse?.translation}" (Q.S. ${verse?.chapterName}: ${verse?.verse_key}) - Dibagikan dari Ayat Pilihan`,
@@ -96,10 +94,10 @@ const handleShare = useCallback(async () => {
         });
         toast.success('Berhasil dibagikan!', { id: shareToast });
       } else {
-        // Fallback untuk desktop juga diubah ke Jpeg
-        const dataUrl = await htmlToImage.toJpeg(quoteCardRef.current, { quality: 0.95, pixelRatio: 2 });
+        // Fallback download juga kembali ke dasar
+        const dataUrl = await htmlToImage.toPng(quoteCardRef.current);
         const link = document.createElement('a');
-        link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.jpeg`;
+        link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`;
         link.href = dataUrl;
         link.click();
         toast.success('Gambar berhasil diunduh!', { id: shareToast });
@@ -158,12 +156,12 @@ const handleShare = useCallback(async () => {
               </div>
               
               {verse.audioUrl && <audio ref={audioRef} src={verse.audioUrl} preload="auto" />}
-              <p className="text-3xl sm:text-4xl leading-relaxed text-right dir-rtl mb-6" style={{ fontFamily: 'var(--font-quran)' }}>{verse.text_uthmani}</p>
+              <p className="text-3xl sm:text-4xl leading-relaxed text-right dir-rtl mb-6 solid-arabic-text" style={{ fontFamily: 'var(--font-quran)' }}>{verse.text_uthmani}</p>
               <p className="text-gray-800 text-base">{verse.translation}</p>
 
               <div className="mt-6 pt-4 border-t flex justify-between gap-2">
-                <button onClick={handlePrevious} disabled={isNavigating || !currentVerseNumber || currentVerseNumber <= 1} className="w-full px-3 py-2 text-sm sm:text-base bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50">‹ Sebelumnya</button>
-                <button onClick={handleNext} disabled={isNavigating || !currentVerseNumber || currentVerseNumber >= 6236} className="w-full px-3 py-2 text-sm sm:text-base bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50">Berikutnya ›</button>
+                <button onClick={handlePrevious} disabled={isNavigating || !currentVerseNumber || currentVerseNumber <= 1} className="w-full px-3 py-2 text-sm sm:text-base solid-nav-button rounded-lg disabled:opacity-50">‹ Sebelumnya</button>
+                <button onClick={handleNext} disabled={isNavigating || !currentVerseNumber || currentVerseNumber >= 6236} className="w-full px-3 py-2 text-sm sm:text-base solid-nav-button rounded-lg disabled:opacity-50">Berikutnya ›</button>
               </div>
             </div>
           </div>
