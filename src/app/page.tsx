@@ -5,7 +5,6 @@ import * as htmlToImage from 'html-to-image';
 import QuoteCard from './QuoteCard';
 import { surahList } from './surahData';
 import toast, { Toaster } from 'react-hot-toast';
-import Link from 'next/link'; // Jangan lupa import Link
 
 type Verse = {
   verse_key: string;
@@ -178,6 +177,7 @@ export default function HomePage() {
         {!verse && (
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-gray-800"> Ayat Pilihan </h1>
+            {/* INI BAGIAN YANG DIPERBAIKI */}
             <p className="mt-2 text-lg text-gray-600"> Temukan petunjuk dan ketenangan dalam Al-Qur&apos;an. </p>
           </div>
         )}
@@ -186,20 +186,6 @@ export default function HomePage() {
           {isLoading ? (<> <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="http://www.w3.org/2000/svg"> <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle> <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg> Mencari... </>) : ('CARI AYAT ACAK')}
         </button>
       </main>
-
-      {/* PENAMBAHAN FOOTER BARU */}
-      <footer className="w-full text-center p-4 text-gray-500 text-sm">
-    <Link href="/panduan" className="hover:underline">
-      Panduan & Disclaimer
-    </Link>
-    <span className="mx-2">|</span>
-    {/* PENAMBAHAN LINK BARU */}
-    <Link href="/dukung" className="hover:underline">
-      Dukung Kami
-    </Link>
-    <span className="mx-2">|</span>
-    <span>© 2025 Ayat Pilihan</span>
-  </footer>
     </>
   );
 }
