@@ -68,23 +68,28 @@ export default function HomePage() {
     setIsLoading(false);
   };
   
-// GANTI SELURUH FUNGSI INI
+// GANTI SELURUH FUNGSI INI dengan versi yang sudah di-upgrade
+
 const handleShare = useCallback(async () => {
   if (quoteCardRef.current === null) {
     return;
   }
 
-  const shareToast = toast.loading('Mempersiapkan gambar...');
+  const shareToast = toast.loading('Mempersiapkan gambar berkualitas tinggi...');
 
   try {
-    const blob = await htmlToImage.toBlob(quoteCardRef.current, { cacheBust: true });
+    // Kita tambahkan opsi pixelRatio: 2 di sini
+    const blob = await htmlToImage.toBlob(quoteCardRef.current, { 
+      cacheBust: true,
+      pixelRatio: 2 // <--- PENAMBAHAN KUNCI UNTUK GAMBAR TAJAM
+    });
 
     if (!blob) {
       throw new Error('Gagal membuat file gambar dari canvas');
     }
 
     const file = new File([blob], `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`, { type: 'image/png' });
-
+    
     if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
       await navigator.share({
         title: `Ayat Pilihan: ${verse?.chapterName} ${verse?.verse_key}`,
@@ -93,14 +98,15 @@ const handleShare = useCallback(async () => {
       });
       toast.success('Berhasil dibagikan!', { id: shareToast });
     } else {
-      const dataUrl = await htmlToImage.toPng(quoteCardRef.current, { cacheBust: true });
+      // Fallback untuk desktop juga kita buat jadi high-res
+      const dataUrl = await htmlToImage.toPng(quoteCardRef.current, { pixelRatio: 2 });
       const link = document.createElement('a');
       link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`;
       link.href = dataUrl;
       link.click();
       toast.success('Gambar berhasil diunduh!', { id: shareToast });
     }
-  } catch (err) { // Perbaikan: hapus ': any' dan tambahkan pengecekan tipe
+  } catch (err) {
     if (err instanceof Error && err.name === 'AbortError') {
       console.log('Proses berbagi dibatalkan oleh pengguna.');
       toast.dismiss(shareToast);
