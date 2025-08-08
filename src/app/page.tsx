@@ -68,27 +68,26 @@ export default function HomePage() {
     setIsLoading(false);
   };
   
-  // FUNGSI HANDLESHARE YANG DI-UPGRADE KE JPEG
+  // FUNGSI HANDLESHARE KEMBALI KE FORMAT PNG
   const handleShare = useCallback(async () => {
     if (quoteCardRef.current === null) {
       return;
     }
 
-    const shareToast = toast.loading('Mempersiapkan gambar berkualitas tinggi...');
+    const shareToast = toast.loading('Mempersiapkan gambar...');
 
     try {
-      // PERUBAHAN: Gunakan toJpeg dengan kualitas 95% dan resolusi 2x
-      const blob = await htmlToImage.toJpeg(quoteCardRef.current, { 
-        quality: 0.95,
-        pixelRatio: 2
+      // PERUBAHAN: Kembali menggunakan toBlob (menghasilkan PNG) dengan resolusi tinggi
+      const blob = await htmlToImage.toBlob(quoteCardRef.current, { 
+        pixelRatio: 2 
       });
 
       if (!blob) {
         throw new Error('Gagal membuat file gambar dari canvas');
       }
 
-      // PERUBAHAN: Ubah nama file dan tipe menjadi .jpeg
-      const file = new File([blob], `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.jpeg`, { type: 'image/jpeg' });
+      // PERUBAHAN: Ubah nama file dan tipe kembali ke .png
+      const file = new File([blob], `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`, { type: 'image/png' });
       
       if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
@@ -98,10 +97,10 @@ export default function HomePage() {
         });
         toast.success('Berhasil dibagikan!', { id: shareToast });
       } else {
-        // Fallback untuk desktop juga diubah ke Jpeg
-        const dataUrl = await htmlToImage.toJpeg(quoteCardRef.current, { quality: 0.95, pixelRatio: 2 });
+        // Fallback untuk desktop juga kembali ke PNG
+        const dataUrl = await htmlToImage.toPng(quoteCardRef.current, { pixelRatio: 2 });
         const link = document.createElement('a');
-        link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.jpeg`;
+        link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`;
         link.href = dataUrl;
         link.click();
         toast.success('Gambar berhasil diunduh!', { id: shareToast });
