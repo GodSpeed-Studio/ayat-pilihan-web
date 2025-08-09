@@ -33,7 +33,7 @@ const QuoteCard = forwardRef<HTMLDivElement, QuoteCardProps>(({ verse }, ref) =>
         </p>
 
         <div className="absolute bottom-8">
-          <p className="text-2xl text-gray-400">Dibagikan dari AyatPilihan.com (Nama Web Anda)</p>
+          <p className="text-2xl text-gray-400">Dibagikan dari ayat-pilihan-web.vercel.app</p>
         </div>
       </div>
     </div>
