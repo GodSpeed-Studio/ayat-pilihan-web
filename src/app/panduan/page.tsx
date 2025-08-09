@@ -6,14 +6,15 @@ export default function PanduanPage() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4 sm:p-8">
       <div className="max-w-2xl w-full bg-white rounded-lg shadow-xl p-6 sm:p-10 text-left">
-
+        
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 text-center mb-6">
           Panduan & Niat Penggunaan
         </h1>
 
         <div className="prose prose-lg max-w-none text-gray-700">
+          {/* PARAGRAF BARU YANG SUDAH DIREVISI */}
           <p className="italic text-center">
-            "Aplikasi ini lahir dari sebuah kebiasaan pribadi: saat hati merasa gundah atau justru bahagia, saya membuka Al-Qur'an secara acak. Seringkali, ayat yang terbuka terasa seperti jawaban atau penegasan langsung dari Allah. Momen 'percakapan' inilah yang menjadi inspirasi Ayat Pilihan."
+            "Di setiap momen kehidupan—baik saat hati lapang penuh syukur maupun saat sempit dirundung duka—Al-Qur'an adalah petunjuk dan solusi abadi. Ia adalah tempat kita 'bertanya', bercermin, dan menemukan kembali arah. 'Ayat Pilihan' hadir sebagai jembatan sederhana untuk memulai percakapan itu. Dengan membuka satu halaman secara acak, semoga Anda menemukan penegasan, pengingat, atau hikmah yang paling Anda butuhkan saat ini."
           </p>
 
           <h2 className="font-bold mt-8 mb-4 text-2xl">Adab Sebelum Memulai</h2>
