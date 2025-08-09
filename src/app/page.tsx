@@ -70,41 +70,54 @@ export default function HomePage() {
   };
 
   const handleShare = useCallback(async () => {
-    if (quoteCardRef.current === null) {
-      return;
+  if (quoteCardRef.current === null) {
+    return;
+  }
+
+  const shareToast = toast.loading('Mempersiapkan gambar HD...');
+
+  try {
+    // Opsi untuk kualitas maksimal: resolusi dinamis sesuai layar pengguna
+    const options = { 
+      cacheBust: true,
+      pixelRatio: window.devicePixelRatio || 2 // Ambil resolusi device, fallback ke 2x
+    };
+
+    // Kita gunakan format PNG yang terbukti paling kompatibel
+    const blob = await htmlToImage.toPng(quoteCardRef.current, options);
+
+    if (!blob) {
+      throw new Error('Gagal membuat file gambar dari canvas');
     }
-    const shareToast = toast.loading('Mempersiapkan gambar...');
-    try {
-      const blob = await htmlToImage.toPng(quoteCardRef.current, { cacheBust: true, pixelRatio: 2 });
-      if (!blob) {
-        throw new Error('Gagal membuat file gambar');
-      }
-      const file = new File([blob], `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`, { type: 'image/png' });
-      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          title: `Ayat Pilihan: ${verse?.chapterName} ${verse?.verse_key}`,
-          text: `"${verse?.translation}" (Q.S. ${verse?.chapterName}: ${verse?.verse_key}) - Dibagikan dari Ayat Pilihan`,
-          files: [file],
-        });
-        toast.success('Berhasil dibagikan!', { id: shareToast });
-      } else {
-        const dataUrl = await htmlToImage.toPng(quoteCardRef.current, { pixelRatio: 2 });
-        const link = document.createElement('a');
-        link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`;
-        link.href = dataUrl;
-        link.click();
-        toast.success('Gambar berhasil diunduh!', { id: shareToast });
-      }
-    } catch (err) {
-      if (err instanceof Error && err.name === 'AbortError') {
-        console.log('Proses berbagi dibatalkan oleh pengguna.');
-        toast.dismiss(shareToast);
-      } else {
-        console.error(err);
-        toast.error('Gagal membagikan gambar.', { id: shareToast });
-      }
+
+    const file = new File([blob], `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`, { type: 'image/png' });
+
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        title: `Ayat Pilihan: ${verse?.chapterName} ${verse?.verse_key}`,
+        text: `"${verse?.translation}" (Q.S. ${verse?.chapterName}: ${verse?.verse_key}) - Dibagikan dari Ayat Pilihan`,
+        files: [file],
+      });
+      toast.success('Berhasil dibagikan!', { id: shareToast });
+    } else {
+      // Fallback untuk desktop juga menggunakan resolusi tinggi
+      const dataUrl = await htmlToImage.toPng(quoteCardRef.current, options);
+      const link = document.createElement('a');
+      link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`;
+      link.href = dataUrl;
+      link.click();
+      toast.success('Gambar berhasil diunduh!', { id: shareToast });
     }
-  }, [verse]);
+  } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      console.log('Proses berbagi dibatalkan oleh pengguna.');
+      toast.dismiss(shareToast);
+    } else {
+      console.error(err);
+      toast.error('Gagal membagikan gambar.', { id: shareToast });
+    }
+  }
+}, [verse]);
 
   const handlePrevious = () => { if (currentVerseNumber && currentVerseNumber > 1) fetchSpecificVerse(currentVerseNumber - 1); };
   const handleNext = () => { if (currentVerseNumber && currentVerseNumber < 6236) fetchSpecificVerse(currentVerseNumber + 1); };
