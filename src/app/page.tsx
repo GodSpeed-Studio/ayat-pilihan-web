@@ -69,22 +69,21 @@ export default function HomePage() {
     setIsLoading(false);
   };
 
-  const handleShare = useCallback(async () => {
+  // GANTI SELURUH FUNGSI INI DENGAN VERSI FINAL YANG STABIL
+
+const handleShare = useCallback(async () => {
   if (quoteCardRef.current === null) {
     return;
   }
 
-  const shareToast = toast.loading('Mempersiapkan gambar HD...');
+  const shareToast = toast.loading('Mempersiapkan gambar...');
 
   try {
-    // Opsi untuk kualitas maksimal: resolusi dinamis sesuai layar pengguna
-    const options = { 
+    // PERBAIKAN: Gunakan format PNG dengan resolusi 2x (paling stabil)
+    const blob = await htmlToImage.toBlob(quoteCardRef.current, { 
       cacheBust: true,
-      pixelRatio: window.devicePixelRatio || 2 // Ambil resolusi device, fallback ke 2x
-    };
-
-    // Kita gunakan format PNG yang terbukti paling kompatibel
-    const blob = await htmlToImage.toPng(quoteCardRef.current, options);
+      pixelRatio: 2 
+    });
 
     if (!blob) {
       throw new Error('Gagal membuat file gambar dari canvas');
@@ -100,8 +99,8 @@ export default function HomePage() {
       });
       toast.success('Berhasil dibagikan!', { id: shareToast });
     } else {
-      // Fallback untuk desktop juga menggunakan resolusi tinggi
-      const dataUrl = await htmlToImage.toPng(quoteCardRef.current, options);
+      // Fallback untuk desktop juga menggunakan resolusi 2x
+      const dataUrl = await htmlToImage.toPng(quoteCardRef.current, { pixelRatio: 2 });
       const link = document.createElement('a');
       link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`;
       link.href = dataUrl;
