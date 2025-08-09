@@ -199,17 +199,25 @@ const handleShare = useCallback(async () => {
         </button>
       </main>
 
-      <footer className="w-full text-center p-4 text-gray-500 text-sm">
-        <Link href="/panduan" className="hover:underline">
-          Panduan & Disclaimer
-        </Link>
-        <span className="mx-2">|</span>
-        <Link href="/dukung" className="hover:underline">
-          Dukung Kami
-        </Link>
-        <span className="mx-2">|</span>
-        <span>© 2025 Ayat Pilihan</span>
-      </footer>
+      {/* GANTI SELURUH BLOK FOOTER ANDA DENGAN INI */}
+<footer className="w-full text-center p-4 text-gray-500 text-sm space-y-2">
+  <div>
+    <Link href="/panduan" className="hover:underline">
+      Panduan & Disclaimer
+    </Link>
+    <span className="mx-2">|</span>
+    <Link href="/dukung" className="hover:underline">
+      Dukung Kami
+    </Link>
+    <span className="mx-2">|</span>
+    <Link href="/privasi" className="hover:underline">
+      Kebijakan Privasi
+    </Link>
+  </div>
+  <div>
+    <span>© 2025 Ayat Pilihan - Sebuah Proyek oleh GodSpeed-Studio</span>
+  </div>
+</footer>
     </>
   );
 }
