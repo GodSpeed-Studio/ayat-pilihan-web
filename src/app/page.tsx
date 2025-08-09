@@ -4,7 +4,8 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import * as htmlToImage from 'html-to-image';
 import QuoteCard from './QuoteCard';
 import { surahList } from './surahData';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
+import Link from 'next/link';
 
 type Verse = {
   verse_key: string;
@@ -26,7 +27,7 @@ export default function HomePage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isAudioLoading, setIsAudioLoading] = useState(false);
   const [currentVerseNumber, setCurrentVerseNumber] = useState<number | null>(null);
-  
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const quoteCardRef = useRef<HTMLDivElement>(null);
 
@@ -67,7 +68,7 @@ export default function HomePage() {
     await fetchSpecificVerse(randomVerseNumber);
     setIsLoading(false);
   };
-  
+
   const handleShare = useCallback(async () => {
     if (quoteCardRef.current === null) {
       return;
@@ -146,7 +147,7 @@ export default function HomePage() {
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-1">Surah {verse.chapterName}</h2>
                 <p className="mb-4 text-base sm:text-lg font-semibold text-gray-700">{verse.verse_key.replace(':', ' : ')}</p>
               </div>
-              
+
               {verse.audioUrl && <audio ref={audioRef} src={verse.audioUrl} preload="auto" />}
               <p className="text-3xl sm:text-4xl leading-relaxed text-right dir-rtl mb-6 text-gray-800" style={{ fontFamily: 'var(--font-quran)' }}>{verse.text_uthmani}</p>
               <p className="text-gray-800 text-base">{verse.translation}</p>
@@ -158,7 +159,7 @@ export default function HomePage() {
             </div>
           </div>
         )}
-        
+
         {verse && (
           <div className="flex justify-center items-center gap-2 sm:gap-4 mb-4 w-full max-w-md">
             {verse.audioUrl ? (
@@ -173,12 +174,11 @@ export default function HomePage() {
             </button>
           </div>
         )}
-        
+
         {!verse && (
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-gray-800"> Ayat Pilihan </h1>
-            {/* INI BAGIAN YANG DIPERBAIKI */}
-            <p className="mt-2 text-lg text-gray-600"> Temukan petunjuk dan ketenangan dalam Al-Qur&apos;an. </p>
+            <p className="mt-2 text-lg text-gray-600"> Temukan petunjuk dan ketenangan dalam Al-Qur'an. </p>
           </div>
         )}
 
@@ -186,6 +186,18 @@ export default function HomePage() {
           {isLoading ? (<> <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="http://www.w3.org/2000/svg"> <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle> <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg> Mencari... </>) : ('CARI AYAT ACAK')}
         </button>
       </main>
+
+      <footer className="w-full text-center p-4 text-gray-500 text-sm">
+        <Link href="/panduan" className="hover:underline">
+          Panduan & Disclaimer
+        </Link>
+        <span className="mx-2">|</span>
+        <Link href="/dukung" className="hover:underline">
+          Dukung Kami
+        </Link>
+        <span className="mx-2">|</span>
+        <span>© 2025 Ayat Pilihan</span>
+      </footer>
     </>
   );
 }
