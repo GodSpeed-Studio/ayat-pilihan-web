@@ -27,12 +27,12 @@ body {
 }
 /* PERBAIKAN FINAL WARNA SOLID (LANGSUNG DI CSS) */
 .solid-arabic-text {
-  color: #1F2937 !important; /* Abu-abu Gelap Solid */
+  color: #1F2937 !important; /* Abu-abu Gelap Solid untuk Teks Arab */
 }
 
 .solid-nav-button {
   background-color: #E5E7EB !important; /* Abu-abu Terang Solid */
-  color: #374151 !important; /* Teks Abu-abu Gelap Solid */
+  color: #1F2937 !important; /* INI PERBAIKANNYA: Paksa warna teks jadi hitam/gelap */
 }
 
 .solid-nav-button:hover {
