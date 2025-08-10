@@ -1,44 +1,41 @@
-// File: src/app/QuoteCard.tsx
-
 import React, { forwardRef } from 'react';
 
-type VerseData = {
+interface Verse {
   verse_key: string;
   text_uthmani: string;
   translation: string;
   chapterName: string;
-};
+}
 
-type QuoteCardProps = {
-  verse: VerseData | null;
-};
+interface QuoteCardProps {
+  verse: Verse | null;
+}
 
 const QuoteCard = forwardRef<HTMLDivElement, QuoteCardProps>(({ verse }, ref) => {
-  if (!verse) return null;
+  if (!verse) {
+    return <div ref={ref}></div>;
+  }
 
   return (
-    <div ref={ref} className="bg-white p-8 border border-gray-200" style={{ width: '1080px', height: '1920px' }}>
-      <div className="flex flex-col justify-center items-center h-full text-center">
-        <h2 className="text-6xl font-bold text-gray-800 mb-4">{verse.chapterName}</h2>
-        <p className="mb-8 text-4xl font-semibold text-gray-700">{verse.verse_key.replace(':', ' : ')}</p>
-        <p 
-          className="text-8xl leading-relaxed text-right dir-rtl mb-12" 
-          style={{ fontFamily: 'var(--font-quran)' }}
-        >
-          {verse.text_uthmani}
-        </p>
-        
-        <p className="text-4xl text-gray-600 px-12">
-          {verse.translation}
-        </p>
-
-        <div className="absolute bottom-8">
-          <p className="text-2xl text-gray-400">Dibagikan dari ayat-pilihan-web.vercel.app</p>
-        </div>
-      </div>
+    <div
+      ref={ref}
+      className="bg-white rounded-lg shadow-xl p-8 text-center w-full max-w-md"
+      style={{ fontFamily: 'var(--font-inter)' }}
+    >
+      <h2 className="text-xl font-semibold text-gray-800 mb-2">Surah {verse.chapterName}</h2>
+      <p className="mb-4 text-sm text-gray-600">{verse.verse_key.replace(':', ' : ')}</p>
+      <p
+        className="text-3xl leading-relaxed text-right mb-4 text-gray-800"
+        style={{ fontFamily: 'var(--font-quran)' }}
+      >
+        {verse.text_uthmani}
+      </p>
+      <p className="text-gray-800 text-base italic">"{verse.translation}"</p>
+      <p className="text-xs text-gray-500 mt-2">Dibagikan dari Ayat Pilihan</p>
     </div>
   );
 });
 
 QuoteCard.displayName = 'QuoteCard';
+
 export default QuoteCard;
