@@ -13,17 +13,13 @@ export const metadata: Metadata = {
   description: "Temukan petunjuk dan ketenangan dalam Al-Qur'an.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode; }) {
   return (
-    <html lang="id" className={`${inter.variable} ${notoNaskh.variable}`}>
+    <html lang="id" className={...}>
       <body>
         <Toaster position="top-center" />
         {children}
-        <Analytics /> {/* <-- Pasang komponen di sini */}
+        <Analytics /> {/* <-- Pastikan ini ada di akhir body */}
       </body>
     </html>
   );
