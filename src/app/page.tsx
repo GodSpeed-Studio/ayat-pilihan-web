@@ -1,5 +1,5 @@
-// Lokasi: src/app/page.tsx
 'use client'; 
+
 import { useState, useRef, useEffect, useCallback } from 'react';
 import * as htmlToImage from 'html-to-image';
 import QuoteCard from './QuoteCard';
@@ -27,6 +27,7 @@ export default function HomePage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isAudioLoading, setIsAudioLoading] = useState(false);
   const [currentVerseNumber, setCurrentVerseNumber] = useState<number | null>(null);
+  
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const quoteCardRef = useRef<HTMLDivElement>(null);
 
@@ -169,16 +170,29 @@ export default function HomePage() {
             <p className="mt-2 text-lg text-gray-600"> Mulailah hari Anda atau temukan petunjuk di setiap momen bersama Al-Qur'an. </p>
           </div>
         )}
-        <button onClick={fetchRandomVerse} disabled={isLoading} className="flex items-center justify-center rounded-lg bg-blue-600 px-8 py-4 text-xl font-semibold text-white shadow-lg transition-all duration-200 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:scale-100">
+        <button onClick={fetchRandomVerse} disabled={isLoading} className="flex items-center justify-center rounded-lg bg-blue-600 px-8 py-4 text-xl font-semibold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:scale-100">
           {isLoading ? (<> <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="http://www.w3.org/2000/svg"> <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle> <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg> Mencari... </>) : ('CARI AYAT ACAK')}
         </button>
       </main>
-      <footer className="w-full text-center p-4 text-gray-500 text-sm">
-        <Link href="/panduan" className="hover:underline"> Panduan & Disclaimer </Link>
-        <span className="mx-2">|</span>
-        <Link href="/dukung" className="hover:underline"> Dukung Kami </Link>
-        <span className="mx-2">|</span>
-        <span>© 2025 Ayat Pilihan</span>
+      
+      {/* KODE FOOTER YANG SUDAH LENGKAP */}
+      <footer className="w-full text-center p-4 text-gray-500 text-sm space-y-2">
+        <div>
+          <Link href="/panduan" className="hover:underline">
+            Panduan & Disclaimer
+          </Link>
+          <span className="mx-2">|</span>
+          <Link href="/dukung" className="hover:underline">
+            Dukung Kami
+          </Link>
+          <span className="mx-2">|</span>
+          <Link href="/privasi" className="hover:underline">
+            Kebijakan Privasi
+          </Link>
+        </div>
+        <div>
+          <span>© 2025 Ayat Pilihan - Sebuah Proyek oleh GodSpeed-Studio</span>
+        </div>
       </footer>
     </>
   );
