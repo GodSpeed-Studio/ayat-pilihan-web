@@ -1,10 +1,9 @@
 // File: src/app/layout.tsx
-
 import type { Metadata } from "next";
 import { Inter, Noto_Naskh_Arabic } from "next/font/google";
 import "./globals.css";
 import { Toaster } from 'react-hot-toast';
-import { Analytics } from '@vercel/analytics/react'; // <-- TAMBAHKAN IMPORT INI
+import Analytics from "./Analytics"; // <-- Impor komponen Analytics
 
 const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
 const notoNaskh = Noto_Naskh_Arabic({ subsets: ["arabic"], weight: "400", variable: '--font-quran' });
@@ -24,7 +23,7 @@ export default function RootLayout({
       <body>
         <Toaster position="top-center" />
         {children}
-        <Analytics /> {/* <-- TAMBAHKAN KOMPONEN INI DI SINI */}
+        <Analytics /> {/* <-- Pasang komponen di sini */}
       </body>
     </html>
   );
