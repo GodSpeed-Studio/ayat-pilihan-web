@@ -70,13 +70,27 @@ export default function HomePage() {
   };
   
   const handleShare = useCallback(async () => {
-    if (quoteCardRef.current === null) return;
+    if (quoteCardRef.current === null) {
+      return;
+    }
+
     const shareToast = toast.loading('Mempersiapkan gambar...');
+
     try {
-      const blob = await htmlToImage.toPng(quoteCardRef.current, { pixelRatio: 2 });
-      if (!blob) throw new Error('Gagal membuat file gambar');
+      const options = { 
+        cacheBust: true,
+        pixelRatio: 2 // Menggunakan resolusi 2x yang stabil
+      };
+
+      const blob = await htmlToImage.toPng(quoteCardRef.current, options);
+
+      if (!blob) {
+        throw new Error('Gagal membuat file gambar');
+      }
+
       const file = new File([blob], `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`, { type: 'image/png' });
-      if (navigator.share && navigator.canShare({ files: [file] })) {
+      
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           title: `Ayat Pilihan: ${verse?.chapterName} ${verse?.verse_key}`,
           text: `"${verse?.translation}" (Q.S. ${verse?.chapterName}: ${verse?.verse_key}) - Dibagikan dari Ayat Pilihan`,
@@ -84,7 +98,7 @@ export default function HomePage() {
         });
         toast.success('Berhasil dibagikan!', { id: shareToast });
       } else {
-        const dataUrl = await htmlToImage.toPng(quoteCardRef.current, { pixelRatio: 2 });
+        const dataUrl = await htmlToImage.toPng(quoteCardRef.current, options);
         const link = document.createElement('a');
         link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`;
         link.href = dataUrl;
@@ -93,8 +107,10 @@ export default function HomePage() {
       }
     } catch (err) {
       if (err instanceof Error && err.name === 'AbortError') {
+        console.log('Proses berbagi dibatalkan oleh pengguna.');
         toast.dismiss(shareToast);
       } else {
+        console.error(err);
         toast.error('Gagal membagikan gambar.', { id: shareToast });
       }
     }
@@ -132,6 +148,7 @@ export default function HomePage() {
       <div className="absolute -z-10 -left-[9999px]">
         <QuoteCard ref={quoteCardRef} verse={verse} />
       </div>
+
       <main className="flex min-h-screen flex-col items-center justify-center p-4 text-center bg-gray-50">
         {verse && (
           <div className="mb-4 max-w-2xl w-full">
@@ -140,16 +157,19 @@ export default function HomePage() {
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-1">Surah {verse.chapterName}</h2>
                 <p className="mb-4 text-base sm:text-lg font-semibold text-gray-700">{verse.verse_key.replace(':', ' : ')}</p>
               </div>
+              
               {verse.audioUrl && <audio ref={audioRef} src={verse.audioUrl} preload="auto" />}
               <p className="text-3xl sm:text-4xl leading-relaxed text-right dir-rtl mb-6 text-gray-800" style={{ fontFamily: 'var(--font-quran)' }}>{verse.text_uthmani}</p>
               <p className="text-gray-800 text-base">{verse.translation}</p>
+
               <div className="mt-6 pt-4 border-t flex justify-between gap-2">
-                <button onClick={handlePrevious} disabled={isNavigating || !currentVerseNumber || currentVerseNumber <= 1} className="w-full px-3 py-2 text-sm sm:text-base bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 solid-nav-button">‹ Sebelumnya</button>
-                <button onClick={handleNext} disabled={isNavigating || !currentVerseNumber || currentVerseNumber >= 6236} className="w-full px-3 py-2 text-sm sm:text-base bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 solid-nav-button">Berikutnya ›</button>
+                <button onClick={handlePrevious} disabled={isNavigating || !currentVerseNumber || currentVerseNumber <= 1} className="w-full px-3 py-2 text-sm sm:text-base bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50">‹ Sebelumnya</button>
+                <button onClick={handleNext} disabled={isNavigating || !currentVerseNumber || currentVerseNumber >= 6236} className="w-full px-3 py-2 text-sm sm:text-base bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50">Berikutnya ›</button>
               </div>
             </div>
           </div>
         )}
+        
         {verse && (
           <div className="flex justify-center items-center gap-2 sm:gap-4 mb-4 w-full max-w-md">
             {verse.audioUrl ? (
@@ -164,36 +184,13 @@ export default function HomePage() {
             </button>
           </div>
         )}
+        
         {!verse && (
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-gray-800"> Ayat Pilihan </h1>
-            <p className="mt-2 text-lg text-gray-600"> Mulailah hari Anda atau temukan petunjuk di setiap momen bersama Al-Qur'an. </p>
+            <p className="mt-2 text-lg text-gray-600"> Temukan petunjuk dan ketenangan dalam Al-Qur'an. </p>
           </div>
         )}
+
         <button onClick={fetchRandomVerse} disabled={isLoading} className="flex items-center justify-center rounded-lg bg-blue-600 px-8 py-4 text-xl font-semibold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:scale-100">
           {isLoading ? (<> <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="http://www.w3.org/2000/svg"> <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle> <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg> Mencari... </>) : ('CARI AYAT ACAK')}
-        </button>
-      </main>
-      
-      {/* KODE FOOTER YANG SUDAH LENGKAP */}
-      <footer className="w-full text-center p-4 text-gray-500 text-sm space-y-2">
-        <div>
-          <Link href="/panduan" className="hover:underline">
-            Panduan & Disclaimer
-          </Link>
-          <span className="mx-2">|</span>
-          <Link href="/dukung" className="hover:underline">
-            Dukung Kami
-          </Link>
-          <span className="mx-2">|</span>
-          <Link href="/privasi" className="hover:underline">
-            Kebijakan Privasi
-          </Link>
-        </div>
-        <div>
-          <span>© 2025 Ayat Pilihan - Sebuah Proyek oleh GodSpeed-Studio</span>
-        </div>
-      </footer>
-    </>
-  );
-}
