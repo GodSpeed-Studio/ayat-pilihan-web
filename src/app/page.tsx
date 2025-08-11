@@ -181,7 +181,7 @@ export default function HomePage() {
         </button>
       </main>
       
-      <footer className="w-full text-center py-8 sm:p-4 text-gray-500 text-sm space-y-2">
+      <footer className="w-full text-center py-10 sm:p-4 text-gray-500 text-sm space-y-2">
         <div>
           <Link href="/panduan" className="hover:underline">
             Panduan & Disclaimer
