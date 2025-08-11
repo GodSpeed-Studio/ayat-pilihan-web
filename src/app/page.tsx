@@ -135,7 +135,7 @@ export default function HomePage() {
       </div>
 
       {/* flex-grow akan membuat main content mengisi ruang, mendorong footer ke bawah */}
-      <main className="flex flex-grow flex-col items-center justify-center p-4 text-center">
+      <main className="flex flex-grow flex-col items-center justify-center p-4 pt-16 sm:pt-4 text-center">
         {verse && (
           <div className="mb-4 max-w-2xl w-full">
             <div className="rounded-lg bg-white p-4 sm:p-8 shadow-xl text-left">
