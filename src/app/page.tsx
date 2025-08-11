@@ -134,13 +134,13 @@ export default function HomePage() {
   }, [verse]);
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <div className="absolute -z-10 -left-[9999px]">
         <QuoteCard ref={quoteCardRef} verse={verse} />
       </div>
 
-      {/* PERBAIKAN: Mengubah justify-center menjadi justify-between */}
-      <div className="flex min-h-screen flex-col items-center justify-between p-4 text-center bg-gray-50">
+      {/* 'flex-grow' akan mendorong footer ke bawah */}
+      <main className="flex flex-grow flex-col items-center justify-center p-4 text-center">
         
         {/* Konten Utama (Wrapper) */}
         <main className="flex flex-col items-center justify-center w-full">
