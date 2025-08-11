@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function KontakPage() {
   // Link Google Form Anda
-  const googleFormLink = "https://forms.gle/rdBepVX26E11RdXc7";
+  const googleFormLink = "https://forms.gle/y5E7ey9i2irkfehS8";
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4 sm:p-8">
