@@ -183,18 +183,14 @@ export default function HomePage() {
       
       <footer className="w-full text-center py-18 sm:p-4 text-gray-500 text-sm space-y-2">
         <div>
-          <Link href="/panduan" className="hover:underline">
-            Panduan & Disclaimer
-          </Link>
+          <Link href="/panduan" className="hover:underline">Panduan</Link>
           <span className="mx-2">|</span>
-          <Link href="/dukung" className="hover:underline">
-            Dukung Kami
-          </Link>
+          <Link href="/dukung" className="hover:underline">Dukung Kami</Link>
           <span className="mx-2">|</span>
-          <Link href="/privasi" className="hover:underline">
-            Kebijakan Privasi
-          </Link>
-        </div>
+          <Link href="/privasi" className="hover:underline">Privasi</Link>
+          <span className="mx-2">|</span>
+          <Link href="/kontak" className="hover:underline">Hubungi Kami</Link>
+        </div>>
         <div>
           <span>© 2025 Ayat Pilihan - Sebuah Proyek oleh GodSpeed-Studio</span>
         </div>
