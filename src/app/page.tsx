@@ -69,26 +69,47 @@ export default function HomePage() {
     setIsLoading(false);
   };
   
-  const handleShare = useCallback(() => {
+  const handleShare = useCallback(async () => {
     if (quoteCardRef.current === null) {
-      toast.error('Gagal, ayat belum dimuat.');
       return;
     }
+    const shareToast = toast.loading('Mempersiapkan gambar...');
+    try {
+      // Selalu buat gambar versi dataUrl (terbukti stabil)
+      const dataUrl = await htmlToImage.toPng(quoteCardRef.current, { pixelRatio: 2 });
+      
+      // Cek apakah Web Share API didukung
+      if (navigator.share) {
+        // "Bungkus ulang" dataUrl menjadi file yang bisa di-share
+        const response = await fetch(dataUrl);
+        const blob = await response.blob();
+        const file = new File([blob], `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`, { type: 'image/png' });
 
-    const shareToast = toast.loading('Mempersiapkan gambar untuk diunduh...');
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            title: `Ayat Pilihan: ${verse?.chapterName} ${verse?.verse_key}`,
+            text: `"${verse?.translation}" (Q.S. ${verse?.chapterName}: ${verse?.verse_key}) - Dibagikan dari Ayat Pilihan`,
+            files: [file],
+          });
+          toast.success('Berhasil dibagikan!', { id: shareToast });
+          return; // Hentikan fungsi di sini agar tidak lanjut ke download
+        }
+      }
+      
+      // Fallback: jika Web Share tidak didukung atau gagal, jalankan download
+      const link = document.createElement('a');
+      link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`;
+      link.href = dataUrl;
+      link.click();
+      toast.success('Gambar berhasil diunduh!', { id: shareToast });
 
-    htmlToImage.toPng(quoteCardRef.current, { pixelRatio: 2 })
-      .then((dataUrl) => {
-        const link = document.createElement('a');
-        link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`;
-        link.href = dataUrl;
-        link.click();
-        toast.success('Gambar berhasil diunduh! Silakan cek galeri Anda.', { id: shareToast });
-      })
-      .catch((err) => {
-        console.error(err);
-        toast.error('Gagal membuat gambar.', { id: shareToast });
-      });
+    } catch (err) {
+      if (err instanceof Error && err.name === 'AbortError') {
+        toast.dismiss(shareToast);
+      } else {
+        toast.error('Gagal membagikan gambar.', { id: shareToast });
+      }
+    }
   }, [verse]);
 
   const handlePrevious = () => { if (currentVerseNumber && currentVerseNumber > 1) fetchSpecificVerse(currentVerseNumber - 1); };
