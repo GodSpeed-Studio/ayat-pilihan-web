@@ -31,7 +31,7 @@ const QuoteCard = forwardRef<HTMLDivElement, QuoteCardProps>(({ verse }, ref) =>
         {verse.text_uthmani}
       </p>
       <p className="text-gray-800 text-base italic">"{verse.translation}"</p>
-      <p className="text-xs text-gray-500 mt-2">Dibagikan dari Ayat Pilihan</p>
+      <p className="text-xs text-gray-500 mt-2">Dibagikan dari AyatPilihan.com</p>
     </div>
   );
 });
