@@ -70,13 +70,26 @@ export default function HomePage() {
   };
 
   const handleShare = useCallback(async () => {
-    if (quoteCardRef.current === null) return;
+    if (quoteCardRef.current === null) {
+      return;
+    }
+
     const shareToast = toast.loading('Mempersiapkan gambar...');
+
     try {
-      const blob = await htmlToImage.toPng(quoteCardRef.current, { pixelRatio: 2 });
-      if (!blob) throw new Error('Gagal membuat file gambar');
+      // PERBAIKAN: Gunakan format PNG dengan resolusi 2x (paling stabil)
+      const blob = await htmlToImage.toBlob(quoteCardRef.current, { 
+        cacheBust: true,
+        pixelRatio: 2 
+      });
+
+      if (!blob) {
+        throw new Error('Gagal membuat file gambar dari canvas');
+      }
+
       const file = new File([blob], `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`, { type: 'image/png' });
-      if (navigator.share && navigator.canShare({ files: [file] })) {
+      
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           title: `Ayat Pilihan: ${verse?.chapterName} ${verse?.verse_key}`,
           text: `"${verse?.translation}" (Q.S. ${verse?.chapterName}: ${verse?.verse_key}) - Dibagikan dari Ayat Pilihan`,
@@ -84,6 +97,7 @@ export default function HomePage() {
         });
         toast.success('Berhasil dibagikan!', { id: shareToast });
       } else {
+        // Fallback untuk desktop juga menggunakan resolusi 2x
         const dataUrl = await htmlToImage.toPng(quoteCardRef.current, { pixelRatio: 2 });
         const link = document.createElement('a');
         link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`;
@@ -93,8 +107,10 @@ export default function HomePage() {
       }
     } catch (err) {
       if (err instanceof Error && err.name === 'AbortError') {
+        console.log('Proses berbagi dibatalkan oleh pengguna.');
         toast.dismiss(shareToast);
       } else {
+        console.error(err);
         toast.error('Gagal membagikan gambar.', { id: shareToast });
       }
     }
