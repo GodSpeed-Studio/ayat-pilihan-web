@@ -69,35 +69,26 @@ export default function HomePage() {
     setIsLoading(false);
   };
   
-  const handleShare = useCallback(async () => {
-    if (quoteCardRef.current === null) return;
-    const shareToast = toast.loading('Mempersiapkan gambar...');
-    try {
-      const blob = await htmlToImage.toPng(quoteCardRef.current, { pixelRatio: 2 });
-      if (!blob) throw new Error('Gagal membuat file gambar');
-      const file = new File([blob], `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`, { type: 'image/png' });
-      if (navigator.share && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          title: `Ayat Pilihan: ${verse?.chapterName} ${verse?.verse_key}`,
-          text: `"${verse?.translation}" (Q.S. ${verse?.chapterName}: ${verse?.verse_key}) - Dibagikan dari Ayat Pilihan`,
-          files: [file],
-        });
-        toast.success('Berhasil dibagikan!', { id: shareToast });
-      } else {
-        const dataUrl = await htmlToImage.toPng(quoteCardRef.current, { pixelRatio: 2 });
+  const handleShare = useCallback(() => {
+    if (quoteCardRef.current === null) {
+      toast.error('Gagal, ayat belum dimuat.');
+      return;
+    }
+
+    const shareToast = toast.loading('Mempersiapkan gambar untuk diunduh...');
+
+    htmlToImage.toPng(quoteCardRef.current, { pixelRatio: 2 })
+      .then((dataUrl) => {
         const link = document.createElement('a');
         link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`;
         link.href = dataUrl;
         link.click();
-        toast.success('Gambar berhasil diunduh!', { id: shareToast });
-      }
-    } catch (err) {
-      if (err instanceof Error && err.name === 'AbortError') {
-        toast.dismiss(shareToast);
-      } else {
-        toast.error('Gagal membagikan gambar.', { id: shareToast });
-      }
-    }
+        toast.success('Gambar berhasil diunduh! Silakan cek galeri Anda.', { id: shareToast });
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error('Gagal membuat gambar.', { id: shareToast });
+      });
   }, [verse]);
 
   const handlePrevious = () => { if (currentVerseNumber && currentVerseNumber > 1) fetchSpecificVerse(currentVerseNumber - 1); };
