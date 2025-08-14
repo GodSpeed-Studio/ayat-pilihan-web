@@ -1,5 +1,9 @@
 import React, { forwardRef } from 'react';
+import type { Verse } from './types'; // Impor dari file baru
 
+interface QuoteCardProps {
+  verse: Verse | null; // Gunakan nama tipe yang benar
+}
 interface Verse {
   verse_key: string;
   text_uthmani: string;

@@ -6,14 +6,7 @@ import QuoteCard from './QuoteCard';
 import { surahList } from './surahData';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
-
-type Verse = {
-  verse_key: string;
-  text_uthmani: string;
-  translation: string;
-  audioUrl: string | null;
-  chapterName: string;
-};
+import type { Verse } from './types';
 
 const getIndonesianSurahName = (surahNumber: number): string => {
   const surah = surahList.find(s => s.number === surahNumber);
