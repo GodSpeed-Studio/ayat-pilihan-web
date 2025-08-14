@@ -1,4 +1,4 @@
-'use client'; 
+'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import * as htmlToImage from 'html-to-image';
@@ -21,13 +21,13 @@ const getIndonesianSurahName = (surahNumber: number): string => {
 };
 
 export default function HomePage() {
-  const [verse, setVerse] = useState<VerseData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [verse, setVerse] = useState<Verse | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isAudioLoading, setIsAudioLoading] = useState(false);
   const [currentVerseNumber, setCurrentVerseNumber] = useState<number | null>(null);
-  const [showInstagramWarning, setShowInstagramWarning] = useState(false); 
+ 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const quoteCardRef = useRef<HTMLDivElement>(null);
 
@@ -68,7 +68,7 @@ export default function HomePage() {
     await fetchSpecificVerse(randomVerseNumber);
     setIsLoading(false);
   };
-  
+ 
   const handleShare = useCallback(async () => {
     if (quoteCardRef.current === null) {
       return;
@@ -77,7 +77,7 @@ export default function HomePage() {
     try {
       // Selalu buat gambar versi dataUrl (terbukti stabil)
       const dataUrl = await htmlToImage.toPng(quoteCardRef.current, { pixelRatio: 2 });
-      
+     
       // Cek apakah Web Share API didukung
       if (navigator.share) {
         // "Bungkus ulang" dataUrl menjadi file yang bisa di-share
@@ -95,7 +95,7 @@ export default function HomePage() {
           return; // Hentikan fungsi di sini agar tidak lanjut ke download
         }
       }
-      
+     
       // Fallback: jika Web Share tidak didukung atau gagal, jalankan download
       const link = document.createElement('a');
       link.download = `ayat-pilihan-${verse?.verse_key.replace(':', '_')}.png`;
@@ -116,25 +116,11 @@ export default function HomePage() {
   const handleNext = () => { if (currentVerseNumber && currentVerseNumber < 6236) fetchSpecificVerse(currentVerseNumber + 1); };
 
   const handlePlayPause = () => {
-    if (isPlaying) { audioRef.current?.pause(); } 
+    if (isPlaying) { audioRef.current?.pause(); }
     else { setIsAudioLoading(true); audioRef.current?.play(); }
   };
 
   useEffect(() => {
-    fetchRandomVerse();
-  }, [fetchRandomVerse]);
-
-  // --- TAMBAHKAN BLOK KODE BARU INI ---
-  useEffect(() => {
-    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
-    // Cek apakah user agent mengandung kata "Instagram"
-    if (/instagram/i.test(userAgent)) {
-      setShowInstagramWarning(true);
-    }
-  }, []); // Array kosong agar hanya berjalan sekali
-  // ------------------------------------
-
-    
     const audio = audioRef.current;
     if (audio) {
       const handlePlay = () => { setIsPlaying(true); setIsAudioLoading(false); };
@@ -154,25 +140,8 @@ export default function HomePage() {
   }, [verse]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 relative">
-      
-      {/* --- KODE NOTIFIKASI BARU DIMASUKKAN DI SINI --- */}
-      {showInstagramWarning && (
-        <div className="bg-yellow-100 border-b-2 border-yellow-200 text-yellow-800 text-sm md:text-base text-center p-3 sticky top-0 z-50">
-          Untuk fungsionalitas penuh (termasuk tombol Bagikan), silakan buka di browser utama Anda.
-          <button 
-            onClick={() => {
-              navigator.clipboard.writeText(window.location.href);
-              toast.success('Link berhasil disalin!');
-            }}
-            className="ml-3 font-bold underline hover:text-yellow-900"
-          >
-            Salin Link
-          </button>
-        </div>
-      )}
-      {/* ------------------------------------------- */}
-
+    // PERBAIKAN: Elemen pembungkus utama diubah untuk mengatur layout
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <div className="absolute -z-10 -left-[9999px]">
         <QuoteCard ref={quoteCardRef} verse={verse} />
       </div>
@@ -196,7 +165,7 @@ export default function HomePage() {
             </div>
           </div>
         )}
-        
+       
         {verse && (
           <div className="flex justify-center items-center gap-2 sm:gap-4 mb-4 w-full max-w-md">
             {verse.audioUrl ? (
@@ -211,7 +180,7 @@ export default function HomePage() {
             </button>
           </div>
         )}
-        
+       
         {!verse && (
           <div className="mb-8 mt-40">
             <h1 className="text-4xl font-bold text-gray-800"> Ayat Pilihan </h1>
@@ -223,7 +192,7 @@ export default function HomePage() {
           {isLoading ? (<> <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w.org/2000/svg" fill="none" viewBox="http://www.w3.org/2000/svg"> <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle> <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg> Mencari... </>) : ('CARI AYAT ACAK')}
         </button>
       </main>
-      
+     
       <footer className="w-full text-center py-18 sm:p-4 text-gray-500 text-sm space-y-2">
         <div>
   <Link href="/panduan" className="hover:underline">Panduan</Link>
