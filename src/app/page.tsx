@@ -1,12 +1,13 @@
 'use client';
 
+import type { Verse } from './types';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import * as htmlToImage from 'html-to-image';
 import QuoteCard from './QuoteCard';
 import { surahList } from './surahData';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
-import type { Verse } from './types';
+
 
 const getIndonesianSurahName = (surahNumber: number): string => {
   const surah = surahList.find(s => s.number === surahNumber);
