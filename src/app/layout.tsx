@@ -35,7 +35,7 @@ export default function RootLayout({
             <div className="flex justify-center space-x-4 mb-2">
               {/* 4. Link diaktifkan menggunakan komponen <Link> */}
               <Link href="/panduan" className="underline hover:text-blue-600">Panduan</Link>
-              <Link href="/dukungan" className="underline hover:text-blue-600">Dukungan</Link>
+              <Link href="/dukung" className="underline hover:text-blue-600">Dukung Kami</Link>
               <Link href="/privasi" className="underline hover:text-blue-600">Privasi</Link>
               <Link href="/kontak" className="underline hover:text-blue-600">Hubungi Kami</Link>
             </div>
