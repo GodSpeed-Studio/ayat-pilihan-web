@@ -43,6 +43,7 @@ body {
   opacity: 0.5 !important;
   cursor: not-allowed !important;
 }
+
 /* === Sticky Footer Styles === */
 footer {
   position: fixed;
@@ -61,3 +62,5 @@ body {
   /* Sesuaikan nilai 80px ini jika nanti tinggi footer-mu berbeda */
   padding-bottom: 80px; 
 }
+
+
