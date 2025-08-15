@@ -31,7 +31,6 @@ export default function HomePage() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const quoteCardRef = useRef<HTMLDivElement>(null);
 
-  // LOGIKA UNTUK MEMICU DIALOG ASLI INSTAGRAM
   useEffect(() => {
     const openInExternalBrowser = () => {
       const currentUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
@@ -47,7 +46,6 @@ export default function HomePage() {
     }
   }, []);
 
-  // SEMUA FUNGSI LOGIKA ANDA KITA PERTAHANKAN
   const fetchSpecificVerse = async (verseNumber: number) => {
     if (verseNumber < 1 || verseNumber > 6236) return;
     setIsNavigating(true);
@@ -150,7 +148,6 @@ export default function HomePage() {
     }
   }, [verse]);
   
-  // ↓↓↓ STRUKTUR JSX YANG SUDAH DIPERBAIKI ↓↓↓
   return (
     <>
       <div className="absolute -z-10 -left-[9999px]">
@@ -158,7 +155,6 @@ export default function HomePage() {
       </div>
 
       <div className="w-full max-w-2xl mx-auto flex flex-col items-center">
-        {/* TAMPILAN KETIKA AYAT SUDAH MUNCUL */}
         {verse && (
           <>
             <div className="rounded-xl bg-white p-6 sm:p-8 shadow-lg text-left w-full mb-6">
@@ -169,4 +165,42 @@ export default function HomePage() {
               {verse.audioUrl && <audio ref={audioRef} src={verse.audioUrl} preload="auto" />}
               <p className="text-3xl sm:text-4xl leading-relaxed text-right dir-rtl mb-6 text-gray-800 font-quran">{verse.text_uthmani}</p>
               <p className="text-gray-800 text-base">{verse.translation}</p>
-              <div className="mt-6 pt-4
+              <div className="mt-6 pt-4 border-t flex justify-between gap-2">
+                {/* ↓↓↓ PERBAIKAN DI SINI ↓↓↓ */}
+                <button onClick={handlePrevious} disabled={isNavigating || !currentVerseNumber || currentVerseNumber <= 1} className="w-full px-3 py-2 text-sm sm:text-base bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 text-gray-800">‹ Sebelumnya</button>
+                <button onClick={handleNext} disabled={isNavigating || !currentVerseNumber || currentVerseNumber >= 6236} className="w-full px-3 py-2 text-sm sm:text-base bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 text-gray-800">Berikutnya ›</button>
+                {/* ↑↑↑ TANDA KUTIP PENUTUP SUDAH DITAMBAHKAN ↑↑↑ */}
+              </div>
+            </div>
+
+            <div className="w-full max-w-md grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              {verse.audioUrl ? (
+                <button onClick={handlePlayPause} disabled={isAudioLoading} className="justify-center rounded-full bg-green-500 px-4 py-3 sm:px-6 text-sm sm:text-base font-semibold text-white transition-all duration-200 hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-wait">
+                  {isAudioLoading ? 'Memuat...' : isPlaying ? '⏹️ Hentikan' : '▶️ Dengarkan'}
+                </button>
+              ) : (
+                <button disabled className="justify-center rounded-full bg-gray-300 px-4 py-3 sm:px-6 text-sm sm:text-base font-semibold text-gray-500 cursor-not-allowed">Audio -</button>
+              )}
+              <button onClick={handleShare} className="justify-center rounded-full bg-blue-500 px-4 py-3 sm:px-6 text-sm sm:text-base font-semibold text-white transition hover:bg-blue-600">
+                Bagikan ↗️
+              </button>
+            </div>
+          </>
+        )}
+        
+        {!verse && !isLoading && (
+          <div className="text-center mb-8 mt-auto sm:mt-0">
+            <h1 className="text-4xl font-bold text-gray-800">Ayat Pilihan</h1>
+            <p className="mt-2 text-lg text-gray-600">Mulailah hari Anda atau temukan petunjuk di setiap momen.</p>
+          </div>
+        )}
+
+        <div className={verse ? "mt-4" : "mt-auto sm:mt-8"}>
+            <button onClick={fetchRandomVerse} disabled={isLoading} className="flex items-center justify-center rounded-lg bg-blue-600 px-8 py-4 text-xl font-semibold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:scale-100">
+              {isLoading ? (<> <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"> <circle className="opacity-25" cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="4"></circle> <path className="opacity-75" fill="currentColor" d="M2 10a8 8 0 018-8v2.5a5.5 5.5 0 00-5.5 5.5H2z"></path> </svg> Mencari... </>) : ('CARI AYAT ACAK')}
+            </button>
+        </div>
+      </div>
+    </>
+  );
+}
