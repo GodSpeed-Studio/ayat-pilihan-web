@@ -20,16 +20,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className={`${inter.variable} ${notoNaskh.variable}`}>
-      {/* ↓↓↓ STRUKTUR FLEXBOX DITERAPKAN DI SINI ↓↓↓ */}
       <body className="flex flex-col min-h-screen">
         <Toaster position="top-center" />
 
-        {/* Konten utama dibuat fleksibel dan terpusat */}
         <main className="flex-grow flex items-center justify-center p-4">
           {children}
         </main>
 
-        {/* Footer akan selalu terdorong ke bawah */}
+        {/* Footer dipastikan selalu berwarna terang */}
         <footer className="w-full text-sm bg-white text-gray-600">
           <div className="max-w-4xl mx-auto py-4 px-4">
             <div className="flex justify-center space-x-4 mb-2">
