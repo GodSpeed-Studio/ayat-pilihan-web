@@ -43,3 +43,24 @@ body {
   opacity: 0.5 !important;
   cursor: not-allowed !important;
 }
+
+/* === Sticky Footer Styles === */
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #ffffff; /* Sesuaikan warna background jika perlu */
+  padding: 1rem;
+  text-align: center;
+  z-index: 1000;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); /* Opsional, untuk efek bayangan */
+}
+
+body {
+  /* Memberi ruang agar konten tidak tertutup oleh footer */
+  /* Sesuaikan nilai 80px ini jika nanti tinggi footer-mu berbeda */
+  padding-bottom: 80px; 
+}
+
+
