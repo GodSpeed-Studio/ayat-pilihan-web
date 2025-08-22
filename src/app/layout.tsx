@@ -25,12 +25,10 @@ export default function RootLayout({
       <body className={`${inter.className} bg-gading text-abu`}>
         <Toaster position="top-center" />
 
-        {/* Padding bawah (pb-28) kembali dipasang untuk memberi ruang bagi fixed footer */}
         <main className="w-full max-w-4xl mx-auto flex-grow flex items-center justify-center p-4 pb-28">
           {children}
         </main>
 
-        {/* Kembali ke 'fixed footer' seperti desain awal, dengan warna baru */}
         <footer className="fixed bottom-0 left-0 w-full z-50 bg-gading border-t border-black/10">
           <div className="max-w-4xl mx-auto py-4 px-4 text-sm">
             <div className="flex justify-center space-x-4 mb-2">
