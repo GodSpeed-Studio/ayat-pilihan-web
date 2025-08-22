@@ -1,16 +1,13 @@
 /* Lokasi: src/app/globals.css */
 
-/*
-  PENTING: JANGAN TAMBAHKAN @tailwind base, components, atau utilities di sini.
-  Tailwind v4 melakukannya secara otomatis.
-*/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* Mengembalikan font default asli Anda untuk teks non-Arab */
+/* Mengembalikan font dan kelas custom asli Anda */
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
-
-/* Kelas CSS Kustom Anda yang sudah ada, kita pertahankan */
 .solid-arabic-text {
   color: #1F2937 !important;
 }
@@ -25,7 +22,6 @@ body {
   opacity: 0.5 !important;
   cursor: not-allowed !important;
 }
-
 .font-traditional-arabic, .font-quran {
   font-family: var(--font-quran), 'Traditional Arabic', serif;
 }

@@ -1,5 +1,4 @@
 // Lokasi: tailwind.config.ts
-
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -23,6 +22,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [require('@tailwindcss/typography')],
+  plugins: [], // Kita bisa hapus typography untuk sementara agar lebih simpel
 };
 export default config;
