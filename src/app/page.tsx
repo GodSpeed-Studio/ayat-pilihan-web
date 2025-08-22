@@ -22,7 +22,6 @@ export default function HomePage() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const quoteCardRef = useRef<HTMLDivElement>(null);
 
-  // ... (Semua logika fungsi Anda tidak perlu diubah, biarkan sama) ...
   useEffect(() => { const openInExternalBrowser = () => { const currentUrl = window.location.protocol + "//" + window.location.host + window.location.pathname; const intentUrl = `intent://${currentUrl.replace(/https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`; window.location.href = intentUrl; }; const isInstagramBrowser = /Instagram|FBAV/i.test(navigator.userAgent); if (isInstagramBrowser) { const timer = setTimeout(() => { openInExternalBrowser(); }, 500); return () => clearTimeout(timer); } }, []);
   const fetchSpecificVerse = async (verseNumber: number) => { if (verseNumber < 1 || verseNumber > 6236) return; setIsNavigating(true); if(audioRef.current) audioRef.current.pause(); setIsPlaying(false); setIsAudioLoading(false); try { const response = await fetch(`https://api.alquran.cloud/v1/ayah/${verseNumber}/editions/quran-uthmani,id.indonesian,ar.alafasy`); const data = await response.json(); if (data.code === 200) { const arabicData = data.data[0]; const translationData = data.data[1]; const audioData = data.data[2]; setVerse({ verse_key: `${arabicData.surah.number}:${arabicData.numberInSurah}`, text_uthmani: arabicData.text, translation: translationData.text, audioUrl: audioData.audio, chapterName: getIndonesianSurahName(arabicData.surah.number), }); setCurrentVerseNumber(verseNumber); } else { throw new Error(data.status); } } catch (error) { console.error("TERJADI ERROR:", error); toast.error("Gagal mengambil data ayat."); } setIsNavigating(false); };
   const fetchRandomVerse = async () => { setIsLoading(true); const randomVerseNumber = Math.floor(Math.random() * 6236) + 1; await fetchSpecificVerse(randomVerseNumber); setIsLoading(false); };
@@ -57,13 +56,15 @@ export default function HomePage() {
 
             <div className="w-full max-w-md grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               {verse.audioUrl ? (
-                <button onClick={handlePlayPause} disabled={isAudioLoading} className="justify-center rounded-full bg-green-500 px-4 py-3 sm:px-6 text-sm sm:text-base font-semibold text-white transition-all duration-200 hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-wait">
+                // --- PERUBAHAN #3A: Warna tombol "Dengarkan" diubah ---
+                <button onClick={handlePlayPause} disabled={isAudioLoading} className="justify-center rounded-full bg-hijau px-4 py-3 sm:px-6 text-sm sm:text-base font-semibold text-white transition-all duration-200 hover:opacity-90 disabled:bg-gray-400 disabled:cursor-wait">
                   {isAudioLoading ? 'Memuat...' : isPlaying ? '⏹️ Hentikan' : '▶️ Dengarkan'}
                 </button>
               ) : (
                 <button disabled className="justify-center rounded-full bg-gray-300 px-4 py-3 sm:px-6 text-sm sm:text-base font-semibold text-gray-500 cursor-not-allowed">Audio -</button>
               )}
-              <button onClick={handleShare} className="justify-center rounded-full bg-blue-500 px-4 py-3 sm:px-6 text-sm sm:text-base font-semibold text-white transition hover:bg-blue-600">
+              {/* --- PERUBAHAN #3B: Warna tombol "Bagikan" diubah --- */}
+              <button onClick={handleShare} className="justify-center rounded-full bg-emas px-4 py-3 sm:px-6 text-sm sm:text-base font-semibold text-white transition hover:opacity-90">
                 Bagikan ↗️
               </button>
             </div>
@@ -72,14 +73,14 @@ export default function HomePage() {
         
         {!verse && !isLoading && (
           <div className="text-center mb-8 mt-auto sm:mt-0">
-            {/* PERBAIKAN: Warna teks disesuaikan dengan tema baru */}
             <h1 className="text-4xl font-bold text-abu">Ayat Pilihan</h1>
             <p className="mt-2 text-lg text-abu/80">Mulailah hari Anda atau temukan petunjuk di setiap momen.</p>
           </div>
         )}
 
         <div className={verse ? "mt-4" : "mt-auto sm:mt-8"}>
-            <button onClick={fetchRandomVerse} disabled={isLoading} className="flex items-center justify-center rounded-lg bg-blue-600 px-8 py-4 text-xl font-semibold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:scale-100">
+            {/* --- PERUBAHAN #3C: Warna tombol "CARI AYAT ACAK" diubah --- */}
+            <button onClick={fetchRandomVerse} disabled={isLoading} className="flex items-center justify-center rounded-lg bg-hijau px-8 py-4 text-xl font-semibold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-hijau focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:scale-100">
               {isLoading ? (<> <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"> <circle className="opacity-25" cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="4"></circle> <path className="opacity-75" fill="currentColor" d="M2 10a8 8 0 018-8v2.5a5.5 5.5 0 00-5.5 5.5H2z"></path> </svg> Mencari... </>) : ('CARI AYAT ACAK')}
             </button>
         </div>

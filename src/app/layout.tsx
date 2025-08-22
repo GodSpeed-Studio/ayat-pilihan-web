@@ -25,11 +25,13 @@ export default function RootLayout({
       <body className={`${inter.className} bg-gading text-abu`}>
         <Toaster position="top-center" />
 
-        <main className="w-full max-w-4xl mx-auto flex-grow flex items-center justify-center p-4 pb-28">
+        {/* --- PERUBAHAN #1: Konten diposisikan ke bawah --- */}
+        <main className="w-full max-w-4xl mx-auto flex-grow flex flex-col justify-end p-4 pb-28">
           {children}
         </main>
 
-        <footer className="fixed bottom-0 left-0 w-full z-50 bg-gading border-t border-black/10">
+        {/* --- PERUBAHAN #2: Jarak padding di footer diperbaiki --- */}
+        <footer className="fixed bottom-0 left-0 w-full z-50 bg-gading border-t border-black/10 py-2 sm:py-4">
           <div className="max-w-4xl mx-auto py-4 px-4 text-sm">
             <div className="flex justify-center space-x-4 mb-2">
               <Link href="/panduan" className="underline hover:text-emas transition-colors">Panduan</Link>
