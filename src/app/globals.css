@@ -1,18 +1,10 @@
 /* Lokasi: src/app/globals.css */
 
-/* Instruksi dasar Tailwind tetap di paling atas */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* DIKEMBALIKAN: Aturan body asli Anda, TAPI HANYA untuk font.
-   Properti 'background' dan 'color' kita hapus agar tidak konflik dengan Tailwind.
-*/
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-/* --- Kelas CSS Kustom Anda yang sudah ada, kita pertahankan --- */
+/* Kelas CSS Kustom Anda yang penting kita pertahankan */
 .solid-arabic-text {
   color: #1F2937 !important;
 }

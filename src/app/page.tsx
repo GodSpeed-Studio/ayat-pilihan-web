@@ -1,3 +1,5 @@
+// Lokasi: src/app/page.tsx
+
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
@@ -20,7 +22,7 @@ export default function HomePage() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const quoteCardRef = useRef<HTMLDivElement>(null);
 
-  // ... (Semua logika fungsi Anda tidak perlu diubah) ...
+  // ... (Semua logika fungsi Anda tidak perlu diubah, biarkan sama) ...
   useEffect(() => { const openInExternalBrowser = () => { const currentUrl = window.location.protocol + "//" + window.location.host + window.location.pathname; const intentUrl = `intent://${currentUrl.replace(/https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`; window.location.href = intentUrl; }; const isInstagramBrowser = /Instagram|FBAV/i.test(navigator.userAgent); if (isInstagramBrowser) { const timer = setTimeout(() => { openInExternalBrowser(); }, 500); return () => clearTimeout(timer); } }, []);
   const fetchSpecificVerse = async (verseNumber: number) => { if (verseNumber < 1 || verseNumber > 6236) return; setIsNavigating(true); if(audioRef.current) audioRef.current.pause(); setIsPlaying(false); setIsAudioLoading(false); try { const response = await fetch(`https://api.alquran.cloud/v1/ayah/${verseNumber}/editions/quran-uthmani,id.indonesian,ar.alafasy`); const data = await response.json(); if (data.code === 200) { const arabicData = data.data[0]; const translationData = data.data[1]; const audioData = data.data[2]; setVerse({ verse_key: `${arabicData.surah.number}:${arabicData.numberInSurah}`, text_uthmani: arabicData.text, translation: translationData.text, audioUrl: audioData.audio, chapterName: getIndonesianSurahName(arabicData.surah.number), }); setCurrentVerseNumber(verseNumber); } else { throw new Error(data.status); } } catch (error) { console.error("TERJADI ERROR:", error); toast.error("Gagal mengambil data ayat."); } setIsNavigating(false); };
   const fetchRandomVerse = async () => { setIsLoading(true); const randomVerseNumber = Math.floor(Math.random() * 6236) + 1; await fetchSpecificVerse(randomVerseNumber); setIsLoading(false); };
@@ -70,8 +72,9 @@ export default function HomePage() {
         
         {!verse && !isLoading && (
           <div className="text-center mb-8 mt-auto sm:mt-0">
-            <h1 className="text-4xl font-bold text-gray-800">Ayat Pilihan</h1>
-            <p className="mt-2 text-lg text-gray-600">Mulailah hari Anda atau temukan petunjuk di setiap momen.</p>
+            {/* PERBAIKAN: Warna teks disesuaikan dengan tema baru */}
+            <h1 className="text-4xl font-bold text-abu">Ayat Pilihan</h1>
+            <p className="mt-2 text-lg text-abu/80">Mulailah hari Anda atau temukan petunjuk di setiap momen.</p>
           </div>
         )}
 

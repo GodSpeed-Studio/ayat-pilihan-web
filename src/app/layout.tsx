@@ -22,17 +22,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className={`${inter.variable} ${notoNaskh.variable}`}>
-      <body className={`${inter.className} flex flex-col min-h-screen bg-gading text-abu`}>
+      <body className={`${inter.className} bg-gading text-abu`}>
         <Toaster position="top-center" />
 
-        {/* DIKEMBALIKAN: Padding bawah (pb-28) untuk memberi ruang bagi fixed footer */}
+        {/* Padding bawah (pb-28) kembali dipasang untuk memberi ruang bagi fixed footer */}
         <main className="w-full max-w-4xl mx-auto flex-grow flex items-center justify-center p-4 pb-28">
           {children}
         </main>
 
-        {/* DIKEMBALIKAN: Struktur 'fixed footer' seperti desain awal Anda, tapi dengan warna baru */}
-        <footer className="fixed bottom-0 left-0 w-full z-50 text-sm bg-gading border-t border-black/10">
-          <div className="max-w-4xl mx-auto py-4 px-4">
+        {/* Kembali ke 'fixed footer' seperti desain awal, dengan warna baru */}
+        <footer className="fixed bottom-0 left-0 w-full z-50 bg-gading border-t border-black/10">
+          <div className="max-w-4xl mx-auto py-4 px-4 text-sm">
             <div className="flex justify-center space-x-4 mb-2">
               <Link href="/panduan" className="underline hover:text-emas transition-colors">Panduan</Link>
               <Link href="/dukung" className="underline hover:text-emas transition-colors">Dukung Kami</Link>
