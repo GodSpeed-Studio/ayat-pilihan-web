@@ -25,13 +25,13 @@ export default function RootLayout({
       <body className={`${inter.className} flex flex-col min-h-screen bg-gading text-abu`}>
         <Toaster position="top-center" />
 
-        {/* PERBAIKAN: Hapus 'pb-28' karena footer tidak lagi 'fixed' */}
-        <main className="w-full max-w-4xl mx-auto flex-grow flex items-center justify-center p-4">
+        {/* DIKEMBALIKAN: Padding bawah (pb-28) untuk memberi ruang bagi fixed footer */}
+        <main className="w-full max-w-4xl mx-auto flex-grow flex items-center justify-center p-4 pb-28">
           {children}
         </main>
 
-        {/* PERBAIKAN: Hapus 'fixed', 'bottom-0', 'left-0', 'w-full', 'z-50'. Biarkan flexbox yang mengatur posisinya. */}
-        <footer className="w-full text-sm border-t border-black/10">
+        {/* DIKEMBALIKAN: Struktur 'fixed footer' seperti desain awal Anda, tapi dengan warna baru */}
+        <footer className="fixed bottom-0 left-0 w-full z-50 text-sm bg-gading border-t border-black/10">
           <div className="max-w-4xl mx-auto py-4 px-4">
             <div className="flex justify-center space-x-4 mb-2">
               <Link href="/panduan" className="underline hover:text-emas transition-colors">Panduan</Link>

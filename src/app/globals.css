@@ -1,21 +1,18 @@
 /* Lokasi: src/app/globals.css */
 
-/* LANGKAH 1: Ganti @import lama dengan 3 arahan Tailwind modern ini.
-  Ini adalah cara standar dan paling benar untuk menjalankan Tailwind.
-*/
+/* Instruksi dasar Tailwind tetap di paling atas */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* LANGKAH 2: Hapus :root dan body {} dari sini.
-  Styling dasar seperti background dan warna teks sekarang sepenuhnya
-  dikontrol oleh kelas Tailwind di layout.tsx (yaitu bg-gading, text-abu).
-  Ini menghilangkan konflik styling.
+/* DIKEMBALIKAN: Aturan body asli Anda, TAPI HANYA untuk font.
+   Properti 'background' dan 'color' kita hapus agar tidak konflik dengan Tailwind.
 */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
 
-/* --- Kelas CSS Kustom Anda dipertahankan di bawah ini --- */
-
-/* Kelas custom untuk styling solid (kita pertahankan) */
+/* --- Kelas CSS Kustom Anda yang sudah ada, kita pertahankan --- */
 .solid-arabic-text {
   color: #1F2937 !important;
 }
@@ -31,7 +28,6 @@
   cursor: not-allowed !important;
 }
 
-/* Kelas custom untuk font (kita pertahankan) */
 .font-traditional-arabic, .font-quran {
   font-family: var(--font-quran), 'Traditional Arabic', serif;
 }
