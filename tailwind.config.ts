@@ -1,4 +1,5 @@
 // Lokasi: tailwind.config.ts (di folder utama)
+
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -11,6 +12,17 @@ const config: Config = {
     extend: {
       fontFamily: {
         quran: ['var(--font-quran)'],
+      },
+      // --- PERUBAHAN #1: Menambahkan palet warna kustom di sini ---
+      colors: {
+        gading: '#F8F6F1',      // Putih Gading
+        abu: '#333333',         // Abu-abu Gelap
+        hijau: {
+          DEFAULT: '#2E7D32'   // Hijau Teduh (utama)
+        },
+        emas: {
+          DEFAULT: '#B8860B'   // Emas Lembut (sekunder)
+        }
       },
     },
   },
