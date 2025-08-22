@@ -1,11 +1,31 @@
 /* Lokasi: src/app/globals.css */
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /*
-  CATATAN: Semua kelas custom Anda (.solid-nav-button, dll) SEMENTARA saya hapus.
-  Ini untuk memastikan tidak ada kode CSS di sini yang menyebabkan seluruh proses build gagal.
-  Kita akan kembalikan nanti setelah layout utama benar.
+  PENTING: JANGAN TAMBAHKAN @tailwind base, components, atau utilities di sini.
+  Tailwind v4 melakukannya secara otomatis.
 */
+
+/* Mengembalikan font default asli Anda untuk teks non-Arab */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Kelas CSS Kustom Anda yang sudah ada, kita pertahankan */
+.solid-arabic-text {
+  color: #1F2937 !important;
+}
+.solid-nav-button {
+  background-color: #E5E7EB !important;
+  color: #1F2937 !important;
+}
+.solid-nav-button:hover {
+  background-color: #D1D5DB !important;
+}
+.solid-nav-button:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+.font-traditional-arabic, .font-quran {
+  font-family: var(--font-quran), 'Traditional Arabic', serif;
+}

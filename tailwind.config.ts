@@ -4,12 +4,10 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
-    // Path ini akan memindai semua file relevan di dalam folder `src`
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
-      // Palet warna yang kita butuhkan
       colors: {
         gading: '#F8F6F1',
         abu: '#333333',
@@ -20,7 +18,6 @@ const config: Config = {
           DEFAULT: '#B8860B'
         }
       },
-      // Font family yang kita butuhkan
       fontFamily: {
         quran: ['var(--font-quran)'],
       },
